@@ -36,7 +36,7 @@ spec:
   storageClassName: sc-fast
   resources:
     requests:
-      storage: 1Gi
+      storage: 2Gi
 ---
 apiVersion: v1
 kind: Service
