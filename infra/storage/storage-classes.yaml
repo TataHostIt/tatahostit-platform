@@ -6,7 +6,7 @@ metadata:
     storageclass.kubernetes.io/is-default-class: "true"
 provisioner: rbd.csi.ceph.com
 parameters:
-  # 1. CRITICAL: This MUST match the clusterID in your infra/storage/ceph-csi.yaml exactly
+  # 1. CRITICAL: This MUST match the clusterID in your infra/storage/ceph-csi.yaml  exactly
   clusterID: 44f39056-b008-4f74-a218-9a95e02802b2
 
   pool: ceph-nvme
