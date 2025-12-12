@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-ingress
+  namespace: argocd
+  annotations:
+    # ArgoCD runs TLS internally, so NGINX must speak HTTPS to the backend
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # Pass SSL through to ArgoCD (optional, or terminate here)
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: argo.tatahostit.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              name: https

@@ -9,6 +9,15 @@ spec:
     repoURL: 'https://kubernetes.github.io/ingress-nginx'
     chart: ingress-nginx
     targetRevision: 4.8.3
+    helm:
+      values: |
+        controller:
+          service:
+            # THIS IS THE FIXED IP
+            loadBalancerIP: "10.20.20.200"
+            annotations:
+              # Tells MetalLB to allow sharing this IP if needed
+              metallb.universe.tf/allow-shared-ip: "nginx-ingress"
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: ingress-nginx
