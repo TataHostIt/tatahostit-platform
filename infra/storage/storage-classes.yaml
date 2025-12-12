@@ -6,15 +6,25 @@ metadata:
     storageclass.kubernetes.io/is-default-class: "true"
 provisioner: rbd.csi.ceph.com
 parameters:
-  clusterID: 44f39056-b008-4f74-a218-9a95e02802b2 # Run 'ceph fsid' on Proxmox to get this
+  # 1. CRITICAL: This MUST match the clusterID in your infra/storage/ceph-csi.yaml exactly
+  clusterID: 44f39056-b008-4f74-a218-9a95e02802b2
+
   pool: ceph-nvme
   imageFeatures: layering
+
+  # 2. Secrets (We added the missing 'controller-publish' lines below)
   csi.storage.k8s.io/provisioner-secret-name: csi-rbd-secret
   csi.storage.k8s.io/provisioner-secret-namespace: storage-system
   csi.storage.k8s.io/controller-expand-secret-name: csi-rbd-secret
   csi.storage.k8s.io/controller-expand-secret-namespace: storage-system
   csi.storage.k8s.io/node-stage-secret-name: csi-rbd-secret
   csi.storage.k8s.io/node-stage-secret-namespace: storage-system
+
+  # --- NEW LINES FROM TEMPLATE ---
+  csi.storage.k8s.io/controller-publish-secret-name: csi-rbd-secret
+  csi.storage.k8s.io/controller-publish-secret-namespace: storage-system
+  # -------------------------------
+
 reclaimPolicy: Delete
 allowVolumeExpansion: true
 ---
@@ -33,5 +43,10 @@ parameters:
   csi.storage.k8s.io/controller-expand-secret-namespace: storage-system
   csi.storage.k8s.io/node-stage-secret-name: csi-rbd-secret
   csi.storage.k8s.io/node-stage-secret-namespace: storage-system
+  # --- NEW LINES FROM TEMPLATE ---
+  csi.storage.k8s.io/controller-publish-secret-name: csi-rbd-secret
+  csi.storage.k8s.io/controller-publish-secret-namespace: storage-system
+  # -------------------------------
+
 reclaimPolicy: Delete
 allowVolumeExpansion: true
