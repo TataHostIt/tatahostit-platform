@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo
+  namespace: test-apps
+spec:
+  selector:
+    matchLabels:
+      app: podinfo
+  template:
+    metadata:
+      labels:
+        app: podinfo
+    spec:
+      containers:
+      - name: podinfo
+        image: stefanprodan/podinfo
+        ports:
+        - containerPort: 9898
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: podinfo-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: podinfo-pvc
+  namespace: test-apps
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: sc-fast
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podinfo
+  namespace: test-apps
+spec:
+  ports:
+  - port: 9898
+    targetPort: 9898
+  selector:
+    app: podinfo
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: podinfo
+  namespace: test-apps
+  annotations:
+    # This tells NGINX to rewrite the path if needed (standard practice)
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: podinfo.tatahostit.local   # <--- Your Internal URL
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: podinfo
+            port:
+              number: 9898
