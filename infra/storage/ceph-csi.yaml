@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ceph-csi
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://ceph.github.io/csi-charts
+    chart: ceph-csi-rbd
+    targetRevision: 3.10.0
+    helm:
+      values: |
+        # 1. Connect to the ConfigMap we just created
+        csiConfig:
+          - clusterID: "44f39056-b008-4f74-a218-9a95e02802b2" # <--- PUT FSID HERE
+            monitors:
+              - "10.10.10.11:6789"  # <--- PUT MONITOR IPS HERE (Match ConfigMap)
+              - "10.10.10.12:6789"
+              - "10.10.10.13:6789"
+
+        # 2. Tell it where to find the keys (Sealed Secret)
+        nodeplugin:
+          name: csi-rbd-plugin
+          httpMetrics:
+            enabled: true
+            containerPort: 8080
+        
+        provisioner:
+          name: csi-rbd-provisioner
+          replicaCount: 2
+
+        # 3. Critical: Map the secrets 
+        # The driver looks for specific variable names.
+        storageClass:
+          enabled: false # We manage StorageClass manually
+        
+        secret:
+          enabled: false # We manage Secret manually (SealedSecret)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: storage-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
