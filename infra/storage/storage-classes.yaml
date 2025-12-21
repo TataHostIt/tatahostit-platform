@@ -7,7 +7,7 @@ metadata:
 provisioner: rbd.csi.ceph.com
 parameters:
   # 1. CRITICAL: This MUST match the clusterID in your infra/storage/ceph-csi.yaml  exactly
-  clusterID: 44f39056-b008-4f74-a218-9a95e02802b2
+  clusterID: "d79e2607-85ae-4a7c-b967-23dadb4e0ec6"
 
   pool: ceph-nvme
   imageFeatures: layering
@@ -34,7 +34,7 @@ metadata:
   name: sc-bulk
 provisioner: rbd.csi.ceph.com
 parameters:
-  clusterID: 44f39056-b008-4f74-a218-9a95e02802b2
+  clusterID: "d79e2607-85ae-4a7c-b967-23dadb4e0ec6"
   pool: ceph-hdd
   imageFeatures: layering
   csi.storage.k8s.io/provisioner-secret-name: csi-rbd-secret

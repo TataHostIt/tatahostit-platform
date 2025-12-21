@@ -23,7 +23,7 @@ spec:
 
         # 2. Connection to your Proxmox Ceph
         csiConfig:
-          - clusterID: "44f39056-b008-4f74-a218-9a95e02802b2"
+          - clusterID: "d79e2607-85ae-4a7c-b967-23dadb4e0ec6"
             monitors:
               - "10.10.10.11:6789"
               - "10.10.10.12:6789"
