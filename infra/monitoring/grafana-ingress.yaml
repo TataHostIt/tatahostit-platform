@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  namespace: monitoring  # IMPORTANT: Must match the namespace where the stack is installed
+  annotations:
+    # We do NOT need "backend-protocol: HTTPS" because Grafana is HTTP internally.
+    # We do NOT need "ssl-passthrough" because Nginx can terminate the cert here.
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod" # Optional: If you use cert-manager
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: grafana.tatahostit.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            # The service name is generated based on your 'fullnameOverride' in values.yaml
+            name: kube-prometheus-stack-grafana
+            port:
+              number: 80

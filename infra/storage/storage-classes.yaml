@@ -25,7 +25,7 @@ parameters:
   csi.storage.k8s.io/controller-publish-secret-namespace: storage-system
   # -------------------------------
 
-reclaimPolicy: Delete
+reclaimPolicy: Retain
 allowVolumeExpansion: true
 ---
 apiVersion: storage.k8s.io/v1
@@ -48,5 +48,5 @@ parameters:
   csi.storage.k8s.io/controller-publish-secret-namespace: storage-system
   # -------------------------------
 
-reclaimPolicy: Delete
+reclaimPolicy: Retain
 allowVolumeExpansion: true

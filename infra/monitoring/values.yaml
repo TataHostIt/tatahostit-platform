@@ -1,0 +1,162 @@
+# ==============================================================================
+# PROMETHEUS STACK CONFIGURATION - PHASE 1
+# ==============================================================================
+# This configuration overrides the default "kube-prometheus-stack" chart.
+# It sets up long-term storage (Ceph) and defines scrape jobs for external
+# hardware (Proxmox, IPMI, Ceph) that exist outside this K8s cluster.
+# ==============================================================================
+
+# --- GENERAL SETTINGS ---
+# Override the fullname to keep resource names clean and predictable.
+fullnameOverride: "kube-prometheus-stack"
+# Ensures that if we remove the chart, the Custom Resource Definitions (CRDs) remain
+# to prevent accidental data loss of defined ServiceMonitors.
+cleanPrometheusOperatorObjectNames: true
+
+# --- GRAFANA CONFIGURATION ---
+grafana:
+  enabled: true
+
+  # Admin Credentials
+  # These are pulled from the 'monitoring-creds' SealedSecret we created.
+  # This prevents storing cleartext passwords in Git.
+  admin:
+    existingSecret: "monitoring-creds"
+    userKey: grafana-admin-user
+    passwordKey: grafana-admin-password
+
+  # Dashboard Settings
+  # 'browser' timezone ensures every user sees charts in their local time.
+  defaultDashboardsTimezone: browser
+
+  # Persistence
+  # Critical: Ensures Dashboards and User settings survive Pod restarts.
+  # Using the 'sc-fast' StorageClass (Ceph NVMe) for performance.
+  persistence:
+    enabled: true
+    storageClassName: sc-fast
+    size: 10Gi
+    accessModes: ["ReadWriteOnce"]
+
+# --- PROMETHEUS CONFIGURATION ---
+prometheus:
+  prometheusSpec:
+    # --------------------------------------------------------------------------
+    # DATA RETENTION & STORAGE
+    # --------------------------------------------------------------------------
+    # Retention period: 6 months (as per requirements).
+    retention: 180d
+
+    # Storage Volume: 200GB on Ceph NVMe.
+    # Note: 'allowVolumeExpansion' is enabled in the SC, so this can be
+    # increased later by simply editing this value to '500Gi'.
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: sc-fast
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 200Gi
+
+    # --------------------------------------------------------------------------
+    # RESOURCES
+    # --------------------------------------------------------------------------
+    # Prometheus with 180d retention and high scrape volume requires significant RAM.
+    # We have 192 cores available, so we are being generous here to prevent OOM kills.
+    resources:
+      requests:
+        memory: 4Gi
+        cpu: 1000m
+      limits:
+        memory: 16Gi
+        cpu: 4000m
+
+    # --------------------------------------------------------------------------
+    # SERVICE DISCOVERY
+    # --------------------------------------------------------------------------
+    # This allows Prometheus to find ServiceMonitors in namespaces other than 'monitoring'.
+    # Essential for GitOps where apps in 'default' or 'apps' define their own monitors.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    serviceMonitorNamespaceSelector: {}
+
+    # --------------------------------------------------------------------------
+    # EXTERNAL SCRAPE CONFIGURATIONS
+    # --------------------------------------------------------------------------
+    # This section configures Prometheus to scrape targets OUTSIDE the Kubernetes cluster.
+    # We use 'additionalScrapeConfigs' because these are static IPs, not K8s Services.
+    additionalScrapeConfigs:
+
+      # 1. EXTERNAL CEPH MGR (PROXMOX NODES)
+      # ------------------------------------
+      # Scrapes the Ceph Manager daemon running on the physical Proxmox hosts.
+      # Port 9283 is the default Ceph Prometheus module port.
+      - job_name: 'external-ceph'
+        static_configs:
+          - targets:
+            - '10.10.10.11:9283' # Proxmox Node 1
+            - '10.10.10.12:9283' # Proxmox Node 2
+            - '10.10.10.13:9283' # Proxmox Node 3
+            # Note: Node 4 (.14) is excluded if it is a compute-only node without Ceph Mgr.
+            # If Node 4 has Mgr, add '10.10.10.14:9283' here.
+
+      # 2. IPMI EXPORTER (PHYSICAL HARDWARE)
+      # ------------------------------------
+      # This uses the "Multi-Target" pattern. Prometheus talks to the 'ipmi-exporter'
+      # Service (running in K8s), passing the physical IP as a URL parameter.
+      # REQUIRES: prometheus-ipmi-exporter to be deployed in Phase 2.
+      - job_name: 'ipmi-nodes'
+        metrics_path: /metrics
+        scheme: http
+        params:
+          module: ['default'] # The IPMI collector module to use
+        static_configs:
+          - targets:
+            - '10.10.10.111' # iLO/IPMI IP 1
+            - '10.10.10.112' # iLO/IPMI IP 2
+            - '10.10.10.113' # iLO/IPMI IP 3
+            - '10.10.10.114' # iLO/IPMI IP 4
+        relabel_configs:
+          # Magic: Take the target IP (10.10.10.111) and put it in the '__param_target' URL param
+          - source_labels: [__address__]
+            target_label: __param_target
+          # Magic: Take the target IP and use it as the 'instance' label in Grafana
+          - source_labels: [__param_target]
+            target_label: instance
+          # Magic: Replace the scrape address with the internal K8s Service of the exporter
+          # We assume the exporter service is named 'ipmi-exporter' in 'monitoring' namespace.
+          - target_label: __address__
+            replacement: ipmi-exporter.monitoring.svc:9290
+
+      # 3. PROXMOX (PVE) CLUSTER
+      # ------------------------------------
+      # This targets the 'prometheus-pve-exporter'.
+      # Unlike IPMI, we do NOT loop over node IPs here. The PVE Exporter talks to the
+      # Proxmox API (using the Token we sealed) and fetches metrics for the ENTIRE cluster
+      # at once. Prometheus just needs to scrape the exporter service itself.
+      # REQUIRES: prometheus-pve-exporter to be deployed in Phase 2.
+      - job_name: 'proxmox-cluster'
+        metrics_path: /pve
+        static_configs:
+          - targets:
+            # This points to the K8s Service of the exporter we will deploy.
+            # It internally queries 10.10.10.11-14 via the API.
+            - 'proxmox-exporter.monitoring.svc:9221'
+
+# --- ALERTMANAGER CONFIGURATION ---
+alertmanager:
+  alertmanagerSpec:
+    # Persistence for Silence rules and Alert history
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: sc-fast
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+
+# --- CLEANUP DEFAULT RULES (OPTIONAL) ---
+# We keep these enabled for now to monitor the K8s cluster health itself.
+# (kube-apiserver, kubelet, etcd, etc. are scraped automatically by the stack defaults)
