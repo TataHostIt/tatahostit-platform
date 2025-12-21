@@ -18,6 +18,6 @@ spec:
         backend:
           service:
             # The service name is generated based on your 'fullnameOverride' in values.yaml
-            name: kube-prometheus-stack-grafana
+            name: monitoring-stack-grafana
             port:
               number: 80
