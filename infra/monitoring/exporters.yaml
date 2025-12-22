@@ -130,8 +130,14 @@ spec:
                 user: "$IPMI_USER"
                 pass: "$IPMI_PASS"
                 driver: "lanplus"
-                privilege: "operator"
+                privilege: "user"
                 timeout: 10000
+                # ADDED: Explicitly list collectors to exclude 'dcmi'
+                collectors:
+                - bmc
+                - ipmi
+                - chassis
+                # - dcmi  <-- This is causing the permission errors
             EOF
         env:
         - name: IPMI_USER
