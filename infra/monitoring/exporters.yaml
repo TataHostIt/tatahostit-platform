@@ -134,10 +134,15 @@ spec:
                 timeout: 10000
                 # ADDED: Explicitly list collectors to exclude 'dcmi'
                 collectors:
-                - bmc
                 - ipmi
-                - chassis
                 # - dcmi  <-- This is causing the permission errors
+                - bmc
+                - bmc-watchdog
+                - chassis
+                - sel
+                - sel-events
+                - sm-lan-mode
+                
             EOF
         env:
         - name: IPMI_USER
