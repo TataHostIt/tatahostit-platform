@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: proxmox-exporter
-        image: prometheuscommunity/pve-exporter:v3.4.5
+        image: prompve/prometheus-pve-exporter:3.7
         ports:
         - containerPort: 9221
         volumeMounts:
@@ -90,7 +90,8 @@ spec:
     spec:
       containers:
       - name: ipmi-exporter
-        image: prometheuscommunity/ipmi-exporter:v1.10.0
+        # Standard community image for IPMI
+        image: prometheuscommunity/ipmi-exporter:v1.10.1
         ports:
         - containerPort: 9290
         args: ["--config.file", "/etc/ipmi/ipmi.yml"]
