@@ -136,13 +136,22 @@ prometheus:
       # Proxmox API (using the Token we sealed) and fetches metrics for the ENTIRE cluster
       # at once. Prometheus just needs to scrape the exporter service itself.
       # REQUIRES: prometheus-pve-exporter to be deployed in Phase 2.
+      # UPDATED: Now loops through all nodes to get per-node stats.
       - job_name: 'proxmox-cluster'
         metrics_path: /pve
         static_configs:
           - targets:
-            # This points to the K8s Service of the exporter we will deploy.
-            # It internally queries 10.10.10.11-14 via the API.
-            - 'proxmox-exporter.monitoring.svc:9221'
+              - '10.10.10.11' # Proxmox Node 1
+              - '10.10.10.12' # Proxmox Node 2
+              - '10.10.10.13' # Proxmox Node 3
+              - '10.10.10.14' # Proxmox Node 4 (If it exists)
+        relabel_configs:
+          - source_labels: [ __address__ ]
+            target_label: __param_target
+          - source_labels: [ __param_target ]
+            target_label: instance
+          - target_label: __address__
+            replacement: proxmox-exporter.monitoring.svc:9221
 
 # --- ALERTMANAGER CONFIGURATION ---
 alertmanager:
