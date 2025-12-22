@@ -36,8 +36,10 @@ loki:
     # Retention Logic (Compactor runs inside Single Binary)
     compactor:
       working_directory: /var/loki/compactor
-      shared_store: filesystem
       retention_enabled: true
+      # 'shared_store' is deleted in Loki 3.0.
+      # Replaced by 'delete_request_store'.
+      delete_request_store: filesystem
 
     limits_config:
       retention_period: 30d
