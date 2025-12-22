@@ -2,6 +2,19 @@
 loki:
   deploymentMode: SingleBinary
 
+  # -----------------------------------------------------------
+  # FIX: Zero out default "Simple Scalable" components
+  # The chart enables these by default (3 replicas each).
+  # We must disable them to satisfy the SingleBinary validation.
+  # -----------------------------------------------------------
+  read:
+    replicas: 0
+  write:
+    replicas: 0
+  backend:
+    replicas: 0
+  # -----------------------------------------------------------
+
   loki:
     # Critical for Loki 3.x+: Schema v13 is now enforced
     schemaConfig:
@@ -38,7 +51,7 @@ loki:
     persistence:
       enabled: true
       size: 50Gi
-      storageClass: sc-fast # Your NVMe Storage Class
+      storageClass: sc-fast
 
     # Pod Security Context for Talos/Ceph
     podSecurityContext:
