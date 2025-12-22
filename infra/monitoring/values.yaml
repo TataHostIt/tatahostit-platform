@@ -107,7 +107,7 @@ prometheus:
       # Service (running in K8s), passing the physical IP as a URL parameter.
       # REQUIRES: prometheus-ipmi-exporter to be deployed in Phase 2.
       - job_name: 'ipmi-nodes'
-        metrics_path: /metrics
+        metrics_path: /ipmi
         scheme: http
         params:
           module: ['default'] # The IPMI collector module to use
@@ -116,7 +116,7 @@ prometheus:
             - '10.10.10.111' # iLO/IPMI IP 1
             - '10.10.10.112' # iLO/IPMI IP 2
             - '10.10.10.113' # iLO/IPMI IP 3
-            - '10.10.10.114' # iLO/IPMI IP 4
+            - '10.10.10.114' # Supermicro/IPMI IP 4
         relabel_configs:
           # Magic: Take the target IP (10.10.10.111) and put it in the '__param_target' URL param
           - source_labels: [__address__]
