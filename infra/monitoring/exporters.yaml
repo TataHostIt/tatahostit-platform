@@ -40,14 +40,23 @@ spec:
       initContainers:
       - name: config-builder
         image: busybox
+        # FIX: We split the 'user!token' string and write the correct Token config format
         command:
           - sh
           - -c
           - |
+            # Split "monitor@pve!monitoring-token" into parts
+            # ${VAR%*!} removes the suffix starting with ! (gets the user)
+            # ${VAR#*!} removes the prefix ending with ! (gets the token name)
+            
+            REAL_USER=${PVE_USER%!*}
+            TOKEN_NAME=${PVE_USER#*!}
+            
             cat <<EOF > /data/pve.yml
             default:
-              user: "$PVE_USER"
-              password: "$PVE_PASSWORD"
+              user: "$REAL_USER"
+              token_name: "$TOKEN_NAME"
+              token_value: "$PVE_PASSWORD"
               verify_ssl: false
             EOF
         env:
@@ -115,13 +124,15 @@ spec:
           - sh
           - -c
           - |
-            echo "modules:
+            cat <<EOF > /data/ipmi.yml
+            modules:
               default:
-                user: \"$IPMI_USER\"
-                pass: \"$IPMI_PASS\"
-                driver: \"lanplus\"
-                privilege: \"admin\"
-                timeout: 10000" > /data/ipmi.yml
+                user: "$IPMI_USER"
+                pass: "$IPMI_PASS"
+                driver: "lanplus"
+                privilege: "admin"
+                timeout: 10000
+            EOF
         env:
         - name: IPMI_USER
           valueFrom:
