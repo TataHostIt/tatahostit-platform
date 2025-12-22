@@ -40,7 +40,16 @@ spec:
       initContainers:
       - name: config-builder
         image: busybox
-        command: ['sh', '-c', 'echo "default:\n  user: $PVE_USER\n  password: $PVE_PASSWORD\n  verify_ssl: false" > /data/pve.yml']
+        command:
+          - sh
+          - -c
+          - |
+            cat <<EOF > /data/pve.yml
+            default:
+              user: "$PVE_USER"
+              password: "$PVE_PASSWORD"
+              verify_ssl: false
+            EOF
         env:
         - name: PVE_USER
           valueFrom:
