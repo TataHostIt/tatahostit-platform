@@ -37,6 +37,13 @@ grafana:
     storageClassName: sc-fast
     size: 10Gi
     accessModes: ["ReadWriteOnce"]
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      uid: loki
+      url: http://logging-stack-loki.monitoring.svc.cluster.local:3100
+      access: proxy
+      isDefault: false
 
 # --- PROMETHEUS CONFIGURATION ---
 prometheus:
