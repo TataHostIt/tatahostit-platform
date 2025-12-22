@@ -130,7 +130,7 @@ spec:
                 user: "$IPMI_USER"
                 pass: "$IPMI_PASS"
                 driver: "lanplus"
-                privilege: "admin"
+                privilege: "user"
                 timeout: 10000
             EOF
         env:
