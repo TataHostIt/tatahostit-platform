@@ -34,7 +34,7 @@ spec:
         - containerPort: 9221
         volumeMounts:
         - name: config-volume
-          mountPath: /etc/pve.yml
+          mountPath: /etc/prometheus/pve.yml
           subPath: pve.yml
       # This InitContainer builds the config file using your Sealed Secrets
       initContainers:
