@@ -3,15 +3,17 @@ config:
     # Pointing to the internal Loki service
     - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
 
+# FIX 1: We explicitly define the 'varlog' volume so we can mount it.
+extraVolumes:
+  - name: varlog
+    hostPath:
+      path: /var/log
+
+# FIX 2: We mount 'varlog' (for system logs) but REMOVED 'pods' and 'docker'
+# because the Helm chart adds those automatically.
 extraVolumeMounts:
   - name: varlog
     mountPath: /var/log
-    readOnly: true
-  - name: varlibdockercontainers
-    mountPath: /var/lib/docker/containers
-    readOnly: true
-  - name: varlogpods
-    mountPath: /var/log/pods
     readOnly: true
 
 tolerations:
