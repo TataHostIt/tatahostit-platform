@@ -9,6 +9,10 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-dns01-prod
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - grafana.tatahostit.com
+    secretName: grafana-tls
   rules:
   - host: grafana.tatahostit.com
     http:
