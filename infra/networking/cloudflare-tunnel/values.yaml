@@ -1,0 +1,44 @@
+cloudflared:
+  # 1. Image & Replica Configuration
+  image:
+    repository: cloudflare/cloudflared
+    pullPolicy: IfNotPresent
+    # tag: 2024.12.0 # Optional: pin a version if you want stability
+
+  replicaCount: 2
+
+  # 2. Network & Ingress Routing
+  # This section generates the config.yaml used by cloudflared.
+  # We route EVERYTHING to your existing Nginx Ingress Controller.
+  ingress:
+    - service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+    - service: "http_status:404" # Catch-all
+
+  # 3. Tunnel Authentication (Using your SealedSecret)
+  # We do NOT use the chart's 'tunnelSecrets' file mounting.
+  # Instead, we inject the token as an environment variable.
+  extraEnv:
+    - name: TUNNEL_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: cloudflared-tunnel-token # Your existing SealedSecret
+          key: TUNNEL_TOKEN
+
+  # 4. Monitoring
+  # The community chart supports ServiceMonitor directly.
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+    scrapeTimeout: 10s
+    # Verify your Prometheus Operator label requirements
+    labels:
+      release: prometheus-stack
+
+  # 5. Resources (Senior Architect Best Practice: Always set limits)
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi

@@ -1,0 +1,11 @@
+apiVersion: v2
+name: cloudflare-tunnel-wrapper
+description: Wrapper chart for Cloudflare Tunnel (Community Version)
+type: application
+version: 1.0.0
+appVersion: 2024.12.0 # Matches cloudflared version
+dependencies:
+  - name: cloudflared
+    version: 2.2.4
+    repository: https://community-charts.github.io/helm-charts
+    alias: cloudflare-tunnel # Optional alias to keep values clean, but let's stick to chart name
