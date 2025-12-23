@@ -1,4 +1,4 @@
-cloudflared:
+cloudflare-tunnel:
   # 1. Image & Replica Configuration
   image:
     repository: cloudflare/cloudflared
