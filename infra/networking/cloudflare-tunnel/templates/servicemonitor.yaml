@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cloudflare-tunnel
+  namespace: cloudflare-tunnel
+  labels:
+    release: prometheus-stack # Ensure this matches your Prometheus Selector
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cloudflared
+  endpoints:
+    - port: http # The chart exposes metrics on port 2000 named 'http'
+      path: /metrics
+      interval: 15s
+  namespaceSelector:
+    matchNames:
+      - cloudflare-tunnel
