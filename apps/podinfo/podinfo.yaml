@@ -57,7 +57,7 @@ metadata:
   namespace: test-apps
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    cert-manager.io/cluster-issuer: letsencrypt-dns01-staging
+    cert-manager.io/cluster-issuer: letsencrypt-dns01-prod
 spec:
   ingressClassName: nginx
   tls:
