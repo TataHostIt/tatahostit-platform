@@ -4,28 +4,24 @@ metadata:
   name: cert-manager
   namespace: argocd
   annotations:
-    # Ensure this installs before issuers that depend on cert-manager CRDs
     argocd.argoproj.io/sync-wave: "10"
 spec:
   project: default
   source:
-    # Recommended by cert-manager docs (OCI is source of truth)
-    repoURL: oci://quay.io/jetstack/charts
+    repoURL: https://charts.jetstack.io
     chart: cert-manager
-    targetRevision: v1.19.2
+    # IMPORTANT: Helm repo chart versions are typically without the "v" prefix.
+    # If Argo complains, change this to "v1.19.2".
+    targetRevision: 1.19.2
     helm:
       releaseName: cert-manager
       parameters:
-        # cert-manager recommends installing CRDs via Helm for chart installs
         - name: crds.enabled
           value: "true"
-#      values: |
-#        # Strongly recommended for homelabs: avoid DNS-01 lookups failing due to
-#        # internal resolvers not being able to resolve public ACME challenge records.
-#        # (You can remove if you know your cluster DNS recursion is solid.)
-#        extraArgs:
-#          - --dns01-recursive-nameservers-only
-#          - --dns01-recursive-nameservers=1.1.1.1:53,8.8.8.8:53
+      values: |
+        extraArgs:
+          - --dns01-recursive-nameservers-only
+          - --dns01-recursive-nameservers=1.1.1.1:53,8.8.8.8:53
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
