@@ -56,12 +56,16 @@ metadata:
   name: podinfo
   namespace: test-apps
   annotations:
-    # This tells NGINX to rewrite the path if needed (standard practice)
     nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-dns01-prod
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - podinfo.tatahostit.com
+    secretName: podinfo-tls
   rules:
-  - host: podinfo.tatahostit.local   # <--- Your Internal URL
+  - host: podinfo.tatahostit.com
     http:
       paths:
       - path: /
