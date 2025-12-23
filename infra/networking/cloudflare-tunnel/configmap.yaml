@@ -5,7 +5,13 @@ metadata:
   namespace: cloudflare-tunnel
 data:
   config.yaml: |
-    # Route all traffic to the internal Nginx Ingress Controller
+    # cloudflared will authenticate via the token in the Deployment env
+    # This config only controls hostname->service routing.
     ingress:
-      - service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+      - hostname: podinfo.tatahostit.com
+        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+      - hostname: grafana.tatahostit.com
+        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+
+      # Catch-all is REQUIRED
       - service: http_status:404
