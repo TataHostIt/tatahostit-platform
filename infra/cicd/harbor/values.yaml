@@ -1,0 +1,102 @@
+expose:
+  type: ingress
+  tls:
+    # We disable Harbor's internal TLS because Nginx Ingress will handle the SSL termination.
+    # This prevents the "HTTPS to HTTP" loop errors.
+    enabled: false
+  ingress:
+    hosts:
+      core: harbor.tatahostit.com
+    className: nginx
+    annotations:
+      # These allow large Docker image uploads without timeouts
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+# This URL must match your Ingress host
+externalURL: https://harbor.tatahostit.com
+
+# Link Admin Password to your Sealed Secret
+harborAdminPassword:
+  existingSecret: "harbor-core-secrets"
+  secretKey: "HARBOR_ADMIN_PASSWORD"
+
+# Link Encryption Key to your Sealed Secret
+secretKey:
+  existingSecret: "harbor-core-secrets"
+  secretKey: "HARBOR_SECRET_KEY"
+
+persistence:
+  enabled: true
+  resourcePolicy: "keep"
+  persistentVolumeClaim:
+    registry:
+      storageClass: "sc-fast" # NVMe for images
+      size: 200Gi
+      accessMode: ReadWriteOnce
+    jobservice:
+      storageClass: "sc-fast" # NVMe for logs
+      size: 10Gi
+      accessMode: ReadWriteOnce
+    database:
+      storageClass: "sc-fast" # NVMe for DB
+      size: 10Gi
+      accessMode: ReadWriteOnce
+    redis:
+      storageClass: "sc-fast" # NVMe for Cache
+      size: 10Gi
+      accessMode: ReadWriteOnce
+    trivy:
+      storageClass: "sc-fast" # NVMe for Vulnerability DB
+      size: 10Gi
+      accessMode: ReadWriteOnce
+
+registry:
+  # Link Registry Secret to your Sealed Secret
+  secret:
+    existingSecret: "harbor-core-secrets"
+    secretKey: "REGISTRY_HTTP_SECRET"
+
+jobservice:
+  # Link JobService Secret to your Sealed Secret
+  secret:
+    existingSecret: "harbor-core-secrets"
+    secretKey: "JOBSERVICE_SECRET"
+
+# We use internal DB/Redis.
+# Note: For internal DB/Redis, the passwords are auto-generated or standard
+# unless we override them. Since they are internal-only (not exposed),
+# using the default config here is acceptable for a homelab.
+database:
+  type: internal
+redis:
+  type: internal
+
+# Enable Trivy for vulnerability scanning
+trivy:
+  enabled: true
+
+metrics:
+  enabled: true  # 1. Turns on the metrics exporters in Harbor
+  serviceMonitor:
+    enabled: true  # 2. Creates the ServiceMonitor CRD for Prometheus Operator
+    additionalLabels:
+      release: "prometheus" # 3. CRITICAL: Match this to your Prometheus release name!
+      # If your Prometheus is in a different namespace, you might need: namespace
+      namespace: "monitoring"
+
+  # Configuration for the individual exporters (Defaults are usually fine)
+  exporter:
+    path: /metrics
+    port: 8001
+  core:
+    path: /metrics
+    port: 8001
+  registry:
+    path: /metrics
+    port: 8001
+  jobservice:
+    path: /metrics
+    port: 8001
