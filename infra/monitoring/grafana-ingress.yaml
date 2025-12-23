@@ -6,11 +6,11 @@ metadata:
   annotations:
     # We do NOT need "backend-protocol: HTTPS" because Grafana is HTTP internally.
     # We do NOT need "ssl-passthrough" because Nginx can terminate the cert here.
-    # cert-manager.io/cluster-issuer: "letsencrypt-prod" # Optional: If you use cert-manager
+    cert-manager.io/cluster-issuer: letsencrypt-dns01-prod
 spec:
   ingressClassName: nginx
   rules:
-  - host: grafana.tatahostit.local
+  - host: grafana.tatahostit.com
     http:
       paths:
       - path: /
