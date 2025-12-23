@@ -6,6 +6,13 @@ cloudflared:
     # tag: 2024.12.0 # Optional: pin a version if you want stability
 
   replicaCount: 2
+  # -------------------------------------------------------------------------
+  # BYPASS: The chart validation requires this secret to exist.
+  # We provide a dummy base64 value ("{}" encoded) to satisfy the check.
+  # The actual auth happens via the TUNNEL_TOKEN env var below.
+  # -------------------------------------------------------------------------
+  tunnelSecrets:
+    base64EncodedConfigJsonFile: "e30=" # "e30=" is base64 for "{}"
 
   # 2. Network & Ingress Routing
   # This section generates the config.yaml used by cloudflared.
@@ -21,7 +28,7 @@ cloudflared:
     - name: TUNNEL_TOKEN
       valueFrom:
         secretKeyRef:
-          name: cloudflared-tunnel-token # Your existing SealedSecret
+          name: cloudflared-tunnel-token # existing SealedSecret
           key: TUNNEL_TOKEN
 
   # 4. Monitoring
@@ -34,7 +41,7 @@ cloudflared:
     labels:
       release: prometheus-stack
 
-  # 5. Resources (Senior Architect Best Practice: Always set limits)
+  # 5. Resources (Best Practice: Always set limits)
   resources:
     limits:
       cpu: 200m
