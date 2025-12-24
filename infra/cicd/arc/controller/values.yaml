@@ -1,0 +1,6 @@
+gha-runner-scale-set-controller:
+  replicaCount: 1
+  image:
+    pullPolicy: IfNotPresent
+  # The controller watches all namespaces by default, which is what we need
+  # since it lives in 'arc-systems' but manages runners in 'cicd'.

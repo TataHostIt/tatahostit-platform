@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arc-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+    targetRevision: HEAD
+    path: infra/cicd/arc
+    directory:
+      recurse: true
+      # Exclude the raw secret files if they are in the folder but not sealed
+      exclude: '*-secret.yaml'
+  destination:
+    server: 'https://kubernetes.default.svc'
+    # The application spec itself handles different namespaces for resources,
+    # so this destination namespace is just a default fallback.
+    namespace: arc-systems
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,55 @@
+apiVersion: actions.github.com/v1alpha1
+kind: AutoscalingRunnerSet
+metadata:
+  name: jarni-runners
+  namespace: cicd
+spec:
+  githubConfigUrl: "https://github.com/talkforceai965"
+
+  githubConfigSecret: arc-multitenant-secrets
+  githubConfigSecretRef:
+    github_app_id: github_app_id_jarni
+    github_app_private_key: github_app_key_jarni
+
+  minRunners: 1
+  maxRunners: 10
+
+  template:
+    spec:
+      hostAliases:
+        - ip: "10.99.211.31"
+          hostnames:
+            - "harbor.tatahostit.com"
+
+      containers:
+        - name: runner
+          image: ghcr.io/actions/actions-runner:latest
+          command: ["/home/runner/run.sh"]
+          env:
+            - name: DOCKER_CONFIG
+              value: /home/runner/.docker
+          volumeMounts:
+            - name: docker-config
+              mountPath: /home/runner/.docker
+              readOnly: true
+            - name: work
+              mountPath: /work
+        - name: dind
+          image: docker:dind
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: work
+              mountPath: /work
+            - name: docker-config
+              mountPath: /root/.docker
+              readOnly: true
+      volumes:
+        - name: work
+          emptyDir: {}
+        - name: docker-config
+          secret:
+            secretName: arc-docker-config
+            items:
+              - key: config.json
+                path: config.json
