@@ -3,6 +3,9 @@ kind: Application
 metadata:
   name: arc-stack
   namespace: argocd
+  # Add Sync Wave to ensure namespaces exist first if needed
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
@@ -11,12 +14,11 @@ spec:
     path: infra/cicd/arc
     directory:
       recurse: true
-      # Exclude the raw secret files if they are in the folder but not sealed
-      exclude: '*-secret.yaml'
+      # We exclude this file itself so it doesn't try to manage itself
+      exclude: 'arc-app.yaml'
   destination:
     server: 'https://kubernetes.default.svc'
-    # The application spec itself handles different namespaces for resources,
-    # so this destination namespace is just a default fallback.
+    # THIS IS THE CONFIG: It forces the Controller into 'arc-systems'
     namespace: arc-systems
   syncPolicy:
     automated:

@@ -1,5 +1,8 @@
 gha-runner-scale-set-controller:
   replicaCount: 1
+  # Optional: Explicitly set to Wave 1
+  podAnnotations:
+    argocd.argoproj.io/sync-wave: "1"
   image:
     pullPolicy: IfNotPresent
   # The controller watches all namespaces by default, which is what we need
