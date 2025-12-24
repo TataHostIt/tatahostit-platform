@@ -11,7 +11,7 @@ spec:
     path: infra
     directory:
       recurse: true
-      exclude: '**/arc/*'
+      exclude: 'cicd/arc/*'
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
