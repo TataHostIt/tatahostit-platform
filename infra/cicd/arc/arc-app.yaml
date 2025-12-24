@@ -3,10 +3,7 @@ kind: Application
 metadata:
   name: arc-stack
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
   annotations:
-    # Optional: ensure this installs after namespaces are ready
     argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
@@ -15,38 +12,30 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true # Auto-creates 'arc-systems'
+      - CreateNamespace=true
 
-  # DEFAULT DESTINATION (For the Controller)
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: arc-systems
 
   sources:
     # ---------------------------------------------------------
-    # SOURCE 1: The Controller (Upstream Helm Chart)
+    # SOURCE 1: YOUR WRAPPER CHART (Git)
     # ---------------------------------------------------------
-    - repoURL: 'oci://ghcr.io/actions/actions-runner-controller-charts'
-      chart: gha-runner-scale-set-controller
-      targetRevision: 0.13.0
+    # Instead of pointing to OCI directly, we point to your Git folder.
+    # ArgoCD will read your Chart.yaml, see the dependency,
+    # and run 'helm dependency build' for you.
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      path: infra/cicd/arc/controller
       helm:
         valueFiles:
-          # References the file in Source 2 using the $values variable
-          - $values/infra/cicd/arc/controller/values.yaml
+          - values.yaml
 
     # ---------------------------------------------------------
-    # SOURCE 2: Your Git Repo (The "Ref" for Values)
+    # SOURCE 2: THE RUNNERS (Git)
     # ---------------------------------------------------------
+    # (Remains the same - pointing to your configs/runners folder)
     - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
       targetRevision: HEAD
-      ref: values
-
-    # ---------------------------------------------------------
-    # SOURCE 3: The Runners (Your Custom YAMLs)
-    # ---------------------------------------------------------
-    # We include the runners here so one "Stack" manages everything.
-    # Note: These YAMLs have "namespace: cicd" hardcoded, which overrides
-    # the App's default destination of 'arc-systems'.
-    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
-      targetRevision: HEAD
-      path: infra/cicd/arc/runners
+      path: infra/cicd/arc/runners # (Or configs/arc/runners if you moved it)
