@@ -13,7 +13,7 @@ expose:
     annotations:
       # CERT MANAGER
       # Change to 'letsencrypt-staging' first if you want to test without rate limits
-      cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
       # NGINX
       ingress.kubernetes.io/ssl-redirect: "true"
       ingress.kubernetes.io/proxy-body-size: "0"
@@ -30,24 +30,24 @@ persistence:
   resourcePolicy: "keep"
   persistentVolumeClaim:
     registry:
-      storageClass: "sc-fast"
+      storageClass: "sc-nvme"
       accessMode: ReadWriteOnce
       size: 50Gi # Large enough for Docker Build Cache
     jobservice:
       jobLog:
-        storageClass: "sc-fast"
+        storageClass: "sc-nvme"
         accessMode: ReadWriteOnce
         size: 5Gi
     database:
-      storageClass: "sc-fast"
+      storageClass: "sc-nvme"
       accessMode: ReadWriteOnce
       size: 10Gi
     redis:
-      storageClass: "sc-fast"
+      storageClass: "sc-nvme"
       accessMode: ReadWriteOnce
       size: 5Gi
     trivy:
-      storageClass: "sc-fast"
+      storageClass: "sc-nvme"
       accessMode: ReadWriteOnce
       size: 10Gi
   imageChartStorage:

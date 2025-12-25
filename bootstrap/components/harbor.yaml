@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: harbor
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3" # Runs AFTER Logging (-4) but BEFORE Apps (0)
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: harbor
+
+  # MULTIPLE SOURCES CONFIGURATION
+  sources:
+    # Source 1: The Official Helm Chart
+    - repoURL: 'https://helm.goharbor.io'
+      chart: harbor
+      targetRevision: 1.18.1 # Double check compatibility with your values
+      helm:
+        valueFiles:
+          - $values/infra/harbor/values.yaml # Points to Source 2
+
+    # Source 2: Your Git Repo (for the values file reference)
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      ref: values
+
+    # Source 3: Your Git Repo (for the Sealed Secret)
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      path: infra/harbor
+      directory:
+        recurse: true
+        # Exclude values.yaml so it isn't applied as a manifest
+        exclude: 'values.yaml'
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

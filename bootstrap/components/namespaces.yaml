@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: namespaces
+  namespace: argocd
+  annotations:
+    # This runs BEFORE almost everything else
+    argocd.argoproj.io/sync-wave: "-15"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+    targetRevision: HEAD
+    path: infra/namespaces
+  destination:
+    server: 'https://kubernetes.default.svc'
+    # It doesn't matter much where this app runs, but 'default' is safe
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    # OPTIONAL: Prevent Argo from deleting namespaces if you delete the App
+    # This protects you from accidentally wiping PVCs in those namespaces.
+    syncOptions:
+      - Prune=false

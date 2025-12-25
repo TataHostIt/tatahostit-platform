@@ -6,7 +6,7 @@ metadata:
   annotations:
     # We do NOT need "backend-protocol: HTTPS" because Grafana is HTTP internally.
     # We do NOT need "ssl-passthrough" because Nginx can terminate the cert here.
-    cert-manager.io/cluster-issuer: letsencrypt-dns01-prod
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx

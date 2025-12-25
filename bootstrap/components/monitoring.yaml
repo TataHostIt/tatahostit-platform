@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-stack
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-6"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+
+  # COMBINING 3 SOURCES INTO ONE APP
+  sources:
+    # SOURCE 1: The Official Helm Chart
+    - repoURL: 'https://prometheus-community.github.io/helm-charts'
+      chart: kube-prometheus-stack
+      targetRevision: 61.3.2 # Check specific version mapping for K8s 1.30+
+      helm:
+        valueFiles:
+          - "$values/infra/monitoring/values.yaml" # Uses Source 2
+
+    # SOURCE 2: Your Git Repo (for the values file reference)
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      ref: values
+
+    # SOURCE 3: Your Git Repo (for Raw Manifests: Exporters, Secrets, Ingress)
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      path: infra/monitoring
+      directory:
+        recurse: true
+        # EXCLUDE the values file (so it's not applied as a manifest)
+        # EXCLUDE any app definitions if you accidentally left them there
+        exclude: '{values.yaml,prometheus-stack.yaml,kustomization.yaml}'
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true # Required for large Prometheus CRDs

@@ -4,7 +4,7 @@ metadata:
   name: tatahostit-runners
   namespace: cicd
   annotations:
-    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-wave: "-1"
   labels:
     app.kubernetes.io/version: "0.13.0"  # Must match Controller version exactly
 spec:
@@ -20,7 +20,7 @@ spec:
     spec:
       # INTERNAL DNS CONFIGURATION
       hostAliases:
-        - ip: "10.99.211.31" # <--- REPLACE WITH YOUR INGRESS CONTROLLER SERVICE CLUSTER-IP,  kubectl get svc -n ingress-nginx
+        - ip: "10.20.20.200" # <--- REPLACE WITH YOUR INGRESS CONTROLLER SERVICE CLUSTER-IP,  kubectl get svc -n ingress-nginx
           hostnames:
             - "harbor.tatahostit.com"
 

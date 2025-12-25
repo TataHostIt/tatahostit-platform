@@ -8,10 +8,9 @@ spec:
   source:
     repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
     targetRevision: HEAD
-    path: infra
+    path: bootstrap/components
     directory:
       recurse: true
-      exclude: 'cicd/arc/*'
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default

@@ -1,0 +1,60 @@
+# 1. RBAC & Service Accounts (Fixes "forbidden" errors)
+rbac:
+  create: true
+
+serviceAccounts:
+  nodeplugin:
+    create: true
+  provisioner:
+    create: true
+
+# 2. Connection to your Proxmox Ceph
+csiConfig:
+  - clusterID: "d79e2607-85ae-4a7c-b967-23dadb4e0ec6"
+    monitors:
+      - "10.10.10.11:6789"
+      - "10.10.10.12:6789"
+      - "10.10.10.13:6789"
+
+# 3. Talos Specifics (Critical for Read-Only FS)
+kubeletDir: /var/lib/kubelet
+
+# 4. Node Plugin (Runs on every node)
+nodeplugin:
+  name: csi-rbdplugin
+  httpMetrics:
+    enabled: true
+    containerPort: 8080
+    service:
+      enabled: true
+      servicePort: 8080
+
+# 5. Provisioner (Runs on Control Plane/Workers to manage volumes)
+provisioner:
+  name: csi-rbdprovisioner
+  replicaCount: 2  # 2 Replicas is sufficient for your cluster size
+  httpMetrics:
+    enabled: true
+    containerPort: 8080
+    service:
+      enabled: true
+      servicePort: 8080
+
+# 6. Disable resources we manage manually (GitOps pattern)
+# We use sealed-secrets for the key, so don't create one here
+secret:
+  create: false
+
+# We have a separate storage-classes.yaml
+storageClass:
+  create: false
+
+# Disable Snapshot classes for now to keep it simple
+volumeSnapshotClass:
+  create: false
+volumeGroupSnapshotClass:
+  create: false
+
+# 7. Logging (Keep it clean, increase if debugging)
+logLevel: 5
+sidecarLogLevel: 1

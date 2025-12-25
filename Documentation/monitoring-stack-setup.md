@@ -133,7 +133,7 @@ These targets are defined in `values.yaml` under `additionalScrapeConfigs` becau
 
 ## 3. Storage & Retention Policy
 
-* **Persistence:** Enabled via `sc-fast` (Ceph NVMe).
+* **Persistence:** Enabled via `sc-nvme` (Ceph NVMe).
 * **Volume Size:** 200 GiB.
 * **Retention Period:** 180 Days.
 * **Expansion:** Allowed. To increase storage, edit `values.yaml` -> `prometheusSpec.storageSpec` and sync via Argo CD.

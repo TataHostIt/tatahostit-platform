@@ -31,10 +31,10 @@ grafana:
 
   # Persistence
   # Critical: Ensures Dashboards and User settings survive Pod restarts.
-  # Using the 'sc-fast' StorageClass (Ceph NVMe) for performance.
+  # Using the 'sc-nvme' StorageClass (Ceph NVMe) for performance.
   persistence:
     enabled: true
-    storageClassName: sc-fast
+    storageClassName: sc-nvme
     size: 10Gi
     accessModes: ["ReadWriteOnce"]
   additionalDataSources:
@@ -60,7 +60,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: sc-fast
+          storageClassName: sc-nvme
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
@@ -167,7 +167,7 @@ alertmanager:
     storage:
       volumeClaimTemplate:
         spec:
-          storageClassName: sc-fast
+          storageClassName: sc-nvme
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:

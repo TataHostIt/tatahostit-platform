@@ -4,7 +4,7 @@ metadata:
   name: jarni-runners
   namespace: cicd
   annotations:
-    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-wave: "-1"
   labels:
     app.kubernetes.io/version: "0.13.0"  # Must match Controller version exactly
 spec:
@@ -15,7 +15,7 @@ spec:
   template:
     spec:
       hostAliases:
-        - ip: "10.99.211.31"
+        - ip: "10.20.20.200"
           hostnames:
             - "harbor.tatahostit.com"
       containers:

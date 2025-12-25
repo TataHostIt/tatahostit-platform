@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: storage-stack
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-13"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: storage
+
+  sources:
+    # SOURCE 1: Your Git Manifests (StorageClass, Secrets)
+    # We give this source a reference name so we can use it later
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      ref: infrastructure  # <--- THIS IS THE KEY
+      path: infra/storage
+      directory:
+        recurse: true
+        exclude: 'ceph-csi.yaml'
+
+    # SOURCE 2: The Ceph CSI Helm Chart
+    - repoURL: https://ceph.github.io/csi-charts
+      chart: ceph-csi-rbd
+      targetRevision: 3.15.1
+      helm:
+        # We point to the file located in the source named 'infrastructure'
+        valueFiles:
+          - "$infrastructure/infra/storage/ceph-rbd-values.yaml"
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

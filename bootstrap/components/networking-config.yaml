@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: networking-config
+  namespace: argocd
+  annotations:
+    # Runs AFTER the controllers are healthy
+    argocd.argoproj.io/sync-wave: "-9"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+    targetRevision: HEAD
+    path: infra/networking
+    directory:
+      recurse: true
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default # Configs are usually cluster-wide or specify their own namespace
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

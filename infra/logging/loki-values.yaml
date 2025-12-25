@@ -35,7 +35,7 @@ singleBinary:
   persistence:
     enabled: true
     size: 50Gi
-    storageClass: sc-fast
+    storageClass: sc-nvme
   podSecurityContext:
     fsGroup: 10001
     runAsUser: 10001
