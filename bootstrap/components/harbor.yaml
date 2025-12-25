@@ -18,7 +18,7 @@ spec:
     # Source 1: The Official Helm Chart
     - repoURL: 'https://helm.goharbor.io'
       chart: harbor
-      targetRevision: 2.14.1 # Double check compatibility with your values
+      targetRevision: 1.18.1 # Double check compatibility with your values
       helm:
         valueFiles:
           - $values/infra/harbor/values.yaml # Points to Source 2
