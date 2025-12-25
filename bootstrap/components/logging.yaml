@@ -16,12 +16,16 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+    retry:
+      limit: 10              # Retry up to 10 times
+      backoff:
+        duration: "10s"      # Wait 10s between retries
+        factor: 2            # Double the wait each time (10s, 20s, 40s...)
+        maxDuration: "3m"    # Cap the wait at 3 minutes
   sources:
     - repoURL: 'https://grafana.github.io/helm-charts'
       chart: loki
-      targetRevision: 6.6.2
+      targetRevision: 6.49.0
       helm:
         valueFiles:
           - $values/infra/logging/loki-values.yaml
@@ -47,10 +51,16 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    retry:
+      limit: 10              # Retry up to 10 times
+      backoff:
+        duration: "10s"      # Wait 10s between retries
+        factor: 2            # Double the wait each time (10s, 20s, 40s...)
+        maxDuration: "3m"    # Cap the wait at 3 minutes
   sources:
     - repoURL: 'https://grafana.github.io/helm-charts'
       chart: promtail
-      targetRevision: 6.15.3
+      targetRevision: 6.17.1
       helm:
         valueFiles:
           - $values/infra/logging/promtail-values.yaml

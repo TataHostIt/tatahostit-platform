@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://charts.jetstack.io
     chart: cert-manager
-    targetRevision: v1.13.3
+    targetRevision: v1.19.2
     helm:
       parameters:
         - name: installCRDs
@@ -26,3 +26,9 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    retry:
+      limit: 10              # Retry up to 10 times
+      backoff:
+        duration: "10s"      # Wait 10s between retries
+        factor: 2            # Double the wait each time (10s, 20s, 40s...)
+        maxDuration: "3m"    # Cap the wait at 3 minutes

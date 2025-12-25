@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: 'https://kubernetes-sigs.github.io/metrics-server/'
     chart: metrics-server
-    targetRevision: 3.12.1
+    targetRevision: 3.13.0
     helm:
       values: |
         args:
@@ -25,5 +25,9 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+    retry:
+      limit: 10              # Retry up to 10 times
+      backoff:
+        duration: "10s"      # Wait 10s between retries
+        factor: 2            # Double the wait each time (10s, 20s, 40s...)
+        maxDuration: "3m"    # Cap the wait at 3 minutes
