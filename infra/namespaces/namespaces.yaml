@@ -69,5 +69,10 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: cloudflare-tunnel
+---
+apiVersion: v1
+kind: Namespace
+metadata:
   name: test-apps
 ---
