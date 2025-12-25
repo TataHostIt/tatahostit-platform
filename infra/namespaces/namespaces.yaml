@@ -3,34 +3,37 @@ kind: Namespace
 metadata:
   name: storage           # For Ceph/CSI
   labels:
-    # This disables the safety lock for this specific namespace
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
 ---
-#apiVersion: v1
-#kind: Namespace
-#metadata:
-#  name: networking          # NGINX and MetalLB
-#  labels:
-#    pod-security.kubernetes.io/enforce: privileged
-#    pod-security.kubernetes.io/audit: privileged
-#    pod-security.kubernetes.io/warn: privileged
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metallb-system
+  labels:
+    # FIXED: MetalLB Speaker needs NET_ADMIN/NET_RAW and HostNetwork
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: ingress-nginx
+  labels:
+    # FIXED: Nginx needs to bind to Host Ports 80/443
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: cert-manager
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: metallb
+  # Cert-Manager Controller is usually fine with 'baseline',
+  # but if you use HTTP-01 solvers later, they might need permissions.
+  # Leaving as default is safer for now.
 ---
 apiVersion: v1
 kind: Namespace
@@ -46,6 +49,11 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: logging
+  labels:
+    # Promtail needs to read /var/log/pods from the host
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
 ---
 apiVersion: v1
 kind: Namespace
@@ -55,16 +63,17 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: arc-systems         # For GitHub Runners
+  name: arc-systems         # For GitHub Runners Controller
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: cicd          # For GitHub Runners
-  # ALLOW PRIVILEGED PODS (Critical for Dind)
-  pod-security.kubernetes.io/enforce: privileged
-  pod-security.kubernetes.io/audit: privileged
-  pod-security.kubernetes.io/warn: privileged
+  name: cicd                # For GitHub Runners Pods
+  labels:
+    # Critical for Docker-in-Docker (dind)
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
 ---
 apiVersion: v1
 kind: Namespace
@@ -75,4 +84,3 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: test-apps
----
