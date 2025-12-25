@@ -11,10 +11,7 @@ spec:
   githubConfigUrl: "https://github.com/TataHostIT"
 
   # This secret must exist in the 'cicd' namespace
-  githubConfigSecret: arc-multitenant-secrets
-  githubConfigSecretRef:
-    github_app_id: github_app_id_tatahostit
-    github_app_private_key: github_app_key_tatahostit
+  githubConfigSecret: tatahostit-gh-secret
 
   minRunners: 1
   maxRunners: 5
