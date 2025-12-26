@@ -66,6 +66,12 @@ kubectl apply -f master-key-backup.yaml
 
 # 2. Restart the controller so it picks up the old key
 kubectl delete pod -n kube-system -l name=sealed-secrets-controller
+
+# Get new password for argocd.
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+
+# Open argocd in browser.
+kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
 ### Step 3: Trigger GitOps

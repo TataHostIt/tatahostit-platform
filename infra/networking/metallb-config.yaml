@@ -2,7 +2,7 @@ apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
   name: production-pool
-  namespace: metallb
+  namespace: metallb-system
 #  annotations:
 #    # This tells ArgoCD: "If the IPAddressPool CRD is missing, wait. Don't fail."
 #    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
@@ -14,7 +14,7 @@ apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
   name: production-advertisement
-  namespace: metallb
+  namespace: metallb-system
   annotations:
 #    # This tells ArgoCD: "If the IPAddressPool CRD is missing, wait. Don't fail."
 #    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
