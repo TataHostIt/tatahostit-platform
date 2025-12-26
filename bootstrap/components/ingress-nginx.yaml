@@ -4,7 +4,7 @@ metadata:
   name: ingress-nginx
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-11"
+    argocd.argoproj.io/sync-wave: "-12"
 spec:
   project: default
   source:
