@@ -12,7 +12,9 @@ spec:
       chart: metallb
       targetRevision: 0.15.3
       helm:
-        releaseName: metallb
+        parameters:
+          - name: controller.logLevel
+            value: info
 
     # Source 2: Apply your CRs (IPAddressPool + L2Advertisement)
     - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
@@ -30,5 +32,9 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 10              # Retry up to 10 times
+      backoff:
+        duration: "10s"      # Wait 10s between retries
+        factor: 2            # Double the wait each time (10s, 20s, 40s...)
+        maxDuration: "3m"    # Cap the wait at 3 minutes
