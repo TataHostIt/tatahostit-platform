@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: networking-config
+  name: networking
   namespace: argocd
   annotations:
     # Runs AFTER the controllers are healthy
@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
     targetRevision: HEAD
-    path: infra/networking
+    path: infra/networking/config
     directory:
       recurse: true
   destination:
