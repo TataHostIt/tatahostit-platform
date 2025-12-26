@@ -1,34 +1,30 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: metallb
+  name: metallb-controller
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "-11"
 spec:
   project: default
-  sources:
-    - repoURL: 'https://metallb.github.io/metallb'
-      chart: metallb
-      targetRevision: 0.15.3
-      helm:
-        releaseName: metallb
-
-    # Source 2: Apply your CRs (IPAddressPool + L2Advertisement)
-    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
-      targetRevision: HEAD
-      path: infra/networking
-      directory:
-        recurse: true
-        include: 'metallb-config.yaml'
-
+  source:
+    repoURL: 'https://metallb.github.io/metallb'
+    chart: metallb
+    targetRevision: 0.15.3
+    helm:
+      parameters:
+        - name: controller.logLevel
+          value: info
   destination:
-    server: https://kubernetes.default.svc
+    server: 'https://kubernetes.default.svc'
     namespace: metallb-system
-
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 10              # Retry up to 10 times
+      backoff:
+        duration: "10s"      # Wait 10s between retries
+        factor: 2            # Double the wait each time (10s, 20s, 40s...)
+        maxDuration: "3m"    # Cap the wait at 3 minutes
