@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudflare-tunnel
+  namespace: argocd
+  annotations:
+    # Runs AFTER the controllers are healthy
+    argocd.argoproj.io/sync-wave: "-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+    targetRevision: HEAD
+    path: infra/networking/cloudflare-tunnel
+    directory:
+      recurse: true
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: cloudflare-tunnel
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 10              # Retry up to 10 times
+      backoff:
+        duration: "10s"      # Wait 10s between retries
+        factor: 2            # Double the wait each time (10s, 20s, 40s...)
+        maxDuration: "3m"    # Cap the wait at 3 minutes
