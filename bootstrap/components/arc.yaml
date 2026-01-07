@@ -11,8 +11,7 @@ spec:
   project: default
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: cicd # Controller runs in arc-systems, but runners are here.
-                    # Note: We handle multi-namespace via the Sources below.
+    namespace: cicd
 
   sources:
     # ---------------------------------------------------------
