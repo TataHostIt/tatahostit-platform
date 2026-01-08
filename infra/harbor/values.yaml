@@ -74,8 +74,6 @@ secretKey: "not-used-override-in-secret"
 # ---------------------------------------------------------
 
 core:
-  # Secret Mapping
-  secretName: "harbor-core-secrets"
   # Resources
   resources:
     requests:
