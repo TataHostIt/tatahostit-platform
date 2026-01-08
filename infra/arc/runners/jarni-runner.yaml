@@ -38,7 +38,10 @@ spec:
               value: tcp://localhost:2375
             # DISABLE TLS VERIFICATION (Internal localhost traffic)
             - name: DOCKER_TLS_VERIFY
-              value: "0"
+              value: ""
+            # FORCE DISABLE CERT PATH (Set to empty string)
+            - name: DOCKER_CERT_PATH
+              value: ""
           volumeMounts:
             - name: docker-config
               mountPath: /tmp/docker-config
