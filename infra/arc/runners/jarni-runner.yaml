@@ -33,6 +33,12 @@ spec:
               value: "jarni-runners"
             - name: DOCKER_CONFIG
               value: /home/runner/.docker
+            # TELL RUNNER TO USE TCP INSTEAD OF SOCKET
+            - name: DOCKER_HOST
+              value: tcp://localhost:2376
+            # DISABLE TLS VERIFICATION (Internal localhost traffic)
+            - name: DOCKER_TLS_VERIFY
+              value: "0"
           volumeMounts:
             - name: docker-config
               mountPath: /tmp/docker-config
