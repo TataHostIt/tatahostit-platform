@@ -29,6 +29,8 @@ spec:
           image: ghcr.io/actions/actions-runner:latest
           command: ["/home/runner/run.sh"]
           env:
+            - name: ACTIONS_RUNNER_LABELS
+              value: "tatahostit-runners"
             - name: DOCKER_CONFIG
               value: /home/runner/.docker
           volumeMounts:
