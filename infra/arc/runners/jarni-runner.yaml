@@ -21,7 +21,13 @@ spec:
       containers:
         - name: runner
           image: ghcr.io/actions/actions-runner:latest
-          command: ["/home/runner/run.sh"]
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              mkdir -p /home/runner/.docker
+              cp /tmp/docker-config/config.json /home/runner/.docker/config.json
+              /home/runner/run.sh
           env:
             - name: ACTIONS_RUNNER_LABELS
               value: "jarni-runners"
@@ -29,7 +35,7 @@ spec:
               value: /home/runner/.docker
           volumeMounts:
             - name: docker-config
-              mountPath: /home/runner/.docker
+              mountPath: /tmp/docker-config
               readOnly: true
             - name: work
               mountPath: /work
