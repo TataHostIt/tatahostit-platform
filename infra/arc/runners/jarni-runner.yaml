@@ -42,6 +42,11 @@ spec:
             # FORCE DISABLE CERT PATH (Set to empty string)
             - name: DOCKER_CERT_PATH
               value: ""
+            - name: GLOBAL_MANIFEST_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-pat-secret
+                  key: pat
           volumeMounts:
             - name: docker-config
               mountPath: /tmp/docker-config
