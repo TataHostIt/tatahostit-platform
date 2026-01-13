@@ -10,8 +10,6 @@ data:
     ingress:
       - hostname: podinfo.tatahostit.com
         service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
-      - hostname: grafana.tatahostit.com
-        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
 
       # Catch-all is REQUIRED
       - service: http_status:404
