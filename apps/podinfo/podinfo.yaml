@@ -60,7 +60,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-public
   tls:
   - hosts:
     - podinfo.tatahostit.com
