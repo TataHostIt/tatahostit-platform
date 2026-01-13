@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ingress-nginx
+  name: ingress-nginx-internal
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "-9"
@@ -12,8 +12,16 @@ spec:
     chart: ingress-nginx
     targetRevision: 4.14.1
     helm:
+      releaseName: ingress-nginx-internal # Explicit release name
       values: |
         controller:
+          # This ID must be unique per controller in the same namespace
+          electionID: ingress-controller-leader-internal
+          ingressClassResource:
+            name: nginx
+            enabled: true
+            default: true  # This makes it the "Default" for all your apps
+            controllerValue: "k8s.io/ingress-nginx"
           service:
             loadBalancerIP: "10.20.20.200" # Your fixed IP
             annotations:

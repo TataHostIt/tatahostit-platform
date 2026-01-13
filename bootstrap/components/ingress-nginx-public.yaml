@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx-public
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-9"
+spec:
+  project: default
+  source:
+    repoURL: 'https://kubernetes.github.io/ingress-nginx'
+    chart: ingress-nginx
+    targetRevision: 4.14.1
+    helm:
+      releaseName: ingress-nginx-public
+      values: |
+        controller:
+          # Unique Election ID is REQUIRED to run two controllers in one namespace
+          electionID: ingress-controller-leader-public
+          
+          ingressClassResource:
+            name: nginx-public  # Apps must ask for this explicitly
+            enabled: true
+            default: false      # NEVER default; opt-in only
+            controllerValue: "k8s.io/ingress-nginx-public"
+          
+          service:
+            type: ClusterIP     # No MetalLB/External IP needed
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: ingress-nginx  # Can coexist in the same namespace
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 10
+      backoff:
+        duration: "10s"
+        factor: 2
+        maxDuration: "3m"
