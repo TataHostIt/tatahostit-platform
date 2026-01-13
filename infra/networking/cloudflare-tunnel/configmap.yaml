@@ -10,7 +10,7 @@ data:
     ingress:
       # Wildcard traffic goes ONLY to the Public Nginx Controller
       - hostname: "*.tatahostit.com"
-        service: https://ingress-nginx-controller-public.ingress-nginx.svc.cluster.local:443
+        service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
         originRequest:
           noTLSVerify: true
       - service: http_status:404
