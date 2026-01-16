@@ -1,13 +1,15 @@
 tailscale-operator:
+  # 1. Credentials
+  # We leave these empty so the operator looks for the 'operator-oauth' secret
   oauth:
-    # We will create this secret manually/via SealedSecrets
-    secretName: tailscale-oauth
-    secretKeyId: clientId
-    secretKeySecret: clientSecret
+    clientId: ""
+    clientSecret: ""
 
-  # Ensure the operator cleans up if you ever uninstall
+  # 2. Developer Access
+  # This enables the specific "Kubernetes API" device in Tailscale
+  apiServerProxyConfig:
+    mode: "true"
+
+  # 3. Cleanup
   operatorConfig:
     cleanup: true
-
-  # Optional: If you want to use the API Server Proxy feature (recommended for your "Dev Access" goal)
-  # This usually works out of the box, but ensure apiServerProxy is enabled if specific config is needed.
