@@ -1,0 +1,13 @@
+tailscale-operator:
+  oauth:
+    # We will create this secret manually/via SealedSecrets
+    secretName: tailscale-oauth
+    secretKeyId: clientId
+    secretKeySecret: clientSecret
+
+  # Ensure the operator cleans up if you ever uninstall
+  operatorConfig:
+    cleanup: true
+
+  # Optional: If you want to use the API Server Proxy feature (recommended for your "Dev Access" goal)
+  # This usually works out of the box, but ensure apiServerProxy is enabled if specific config is needed.

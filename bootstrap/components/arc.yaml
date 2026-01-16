@@ -4,7 +4,7 @@ metadata:
   name: arc
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-2" # Runs AFTER Apps (Wave 0)
+    argocd.argoproj.io/sync-wave: "-2"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:

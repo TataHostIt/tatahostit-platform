@@ -1,0 +1,10 @@
+apiVersion: v2
+name: tailscale-operator-wrapper
+description: Wrapper chart for Tailscale Operator
+type: application
+version: 0.1.0
+appVersion: "1.92.5"
+dependencies:
+  - name: tailscale-operator
+    version: 1.92.5 # Check https://artifacthub.io/packages/helm/tailscale/tailscale-operator for latest
+    repository: https://pkgs.tailscale.com/helmcharts
