@@ -13,3 +13,5 @@ tailscale-operator:
   # 3. Cleanup
   operatorConfig:
     cleanup: true
+    defaultTags:
+      - "tag:thi-k8s-operator"
