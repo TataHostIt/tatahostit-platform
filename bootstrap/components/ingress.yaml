@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: internal-ingress
+  namespace: argocd
+  annotations:
+    # This ensures this app syncs AFTER your core infra/networking apps
+    argocd.argoproj.io/sync-wave: "2"
+finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+    targetRevision: HEAD
+    path: infra/networking/ingress
+  destination:
+    server: https://kubernetes.default.svc
+    # We set default namespace to argocd, but the ingress files specify their own
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx-tailscale
+  namespace: ingress-nginx
+  annotations:
+    # 1. Expose this service to the Tailnet
+    tailscale.com/expose: "true"
+
+    # 2. Name the device in Tailscale (e.g. internal-gateway.tailnet.ts.net)
+    tailscale.com/hostname: "internal-gateway"
+
+    # 3. Apply the tags we created earlier so Devs can access it
+    tailscale.com/tags: "tag:thi-k8s-services"
+spec:
+  type: ClusterIP # Tailscale Operator handles the external access
+  selector:
+    # These selectors must match your Nginx Controller Pods
+    app.kubernetes.io/instance: ingress-nginx-internal
+    app.kubernetes.io/component: controller
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: https
+      port: 443
+      targetPort: https

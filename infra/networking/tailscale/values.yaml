@@ -10,8 +10,10 @@ tailscale-operator:
   apiServerProxyConfig:
     mode: "true"
 
-  # 3. Cleanup
   operatorConfig:
     cleanup: true
     defaultTags:
       - "tag:thi-k8s-operator"
+
+  proxyConfig:
+    defaultTags: "tag:thi-k8s-services"
