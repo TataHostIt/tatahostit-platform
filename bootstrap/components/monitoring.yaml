@@ -18,7 +18,7 @@ spec:
     # SOURCE 1: The Official Helm Chart
     - repoURL: 'https://prometheus-community.github.io/helm-charts'
       chart: kube-prometheus-stack
-      targetRevision: 80.6.0 # Check specific version mapping for K8s 1.30+
+      targetRevision: 81.0.0 # Check specific version mapping for K8s 1.30+
       helm:
         valueFiles:
           - "$values/infra/monitoring/values.yaml" # Uses Source 2
