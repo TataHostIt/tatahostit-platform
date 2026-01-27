@@ -123,7 +123,7 @@ prometheus:
             - '10.10.10.111' # iLO/IPMI IP 1
             - '10.10.10.112' # iLO/IPMI IP 2
             - '10.10.10.113' # iLO/IPMI IP 3
-            - '10.10.10.114' # Supermicro/IPMI IP 4
+            # - '10.10.10.114' # Supermicro/IPMI IP 4 //TODO: Uncomment after setup is complete.
         relabel_configs:
           # Magic: Take the target IP (10.10.10.111) and put it in the '__param_target' URL param
           - source_labels: [__address__]
