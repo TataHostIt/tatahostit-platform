@@ -44,6 +44,8 @@ grafana:
       url: http://loki.monitoring.svc.cluster.local:3100
       access: proxy
       isDefault: false
+  deploymentStrategy:
+    type: Recreate # This kills the old pod first, releasing the volume lock
 
 # --- PROMETHEUS CONFIGURATION ---
 prometheus:
