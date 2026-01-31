@@ -24,6 +24,7 @@ spec:
 
   rabbitmq:
     additionalConfig: |
+      management.path_prefix = /
       default_queue_type = quorum
       vm_memory_high_watermark.relative = 0.4
       disk_free_limit.absolute = 2GB
