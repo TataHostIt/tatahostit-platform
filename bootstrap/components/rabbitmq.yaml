@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rabbitmq-stack
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+    targetRevision: HEAD
+    path: infra/rabbitmq
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: rabbitmq-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

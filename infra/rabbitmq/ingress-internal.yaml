@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rabbitmq-mgmt-internal
+  namespace: rabbitmq-system
+  annotations:
+    # Use the cert-manager ClusterIssuer you already have configured
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # Explicitly point to the internal nginx class defined in your manifest
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - rabbitmq-dev.internal.tatahostit.com
+    secretName: rabbitmq-mgmt-tls
+  rules:
+  - host: rabbitmq-dev.internal.tatahostit.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rabbitmq-ha
+            port:
+              number: 15672 # Default Management UI port

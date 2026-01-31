@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rabbitmq-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/rabbitmq/cluster-operator/releases/download/v2.19.0/cluster-operator.yaml' # https://github.com/rabbitmq/cluster-operator/releases get latest version from here.
+    chart: "" # Plain YAML reference
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: rabbitmq-system

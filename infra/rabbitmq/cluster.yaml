@@ -1,0 +1,39 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq-ha
+  namespace: rabbitmq-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 3 # HA Quorum
+  image: rabbitmq:4.2.3-management # pull latest stable from https://hub.docker.com/_/rabbitmq/tags
+
+  persistence:
+    storageClassName: sc-nvme # Your Ceph NVMe Storage Class
+    storage: 15Gi
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "2Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+
+  rabbitmq:
+    additionalConfig: |
+      default_queue_type = quorum
+      vm_memory_high_watermark.relative = 0.4
+      disk_free_limit.absolute = 2GB
+
+  service:
+    type: ClusterIP # Internal exposure
+
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: rabbitmq-ha
+        topologyKey: "kubernetes.io/hostname"
