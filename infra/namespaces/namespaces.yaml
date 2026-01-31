@@ -102,11 +102,4 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: rabbitmq-system
-  labels:
-    name: rabbitmq-system
----
-apiVersion: v1
-kind: Namespace
-metadata:
   name: test-apps
