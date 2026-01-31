@@ -17,7 +17,7 @@ spec:
 
   storage:
     size: 20Gi # Reminder: Can expand later, but cannot shrink
-    storageClass: ceph-nvme
+    storageClass: sc-nvme
 
   monitoring:
     enablePodMonitor: true
