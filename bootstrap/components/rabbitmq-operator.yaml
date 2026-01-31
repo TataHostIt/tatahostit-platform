@@ -8,8 +8,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/rabbitmq/cluster-operator/releases/download/v2.19.0/cluster-operator.yaml' # https://github.com/rabbitmq/cluster-operator/releases get latest version from here.
-    chart: "" # Plain YAML reference
+    # Latest operator manifest (v2.19.0) https://github.com/rabbitmq/cluster-operator/releases
+    repoURL: 'https://github.com/rabbitmq/cluster-operator/releases/download/v2.19.0/cluster-operator.yaml'
+    chart: ""
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: rabbitmq-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
