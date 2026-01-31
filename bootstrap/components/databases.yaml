@@ -22,3 +22,5 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      # This helps avoid validation errors during initial sync
+      - SkipDryRunOnMissingResource=true
