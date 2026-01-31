@@ -9,14 +9,11 @@ spec:
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:16
 
-  # Spread pods across your 3 nodes
+  # Corrected CNPG Affinity Schema
   affinity:
-    podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            cnpg.io/cluster: postgres-shared
-        topologyKey: "kubernetes.io/hostname"
+    enablePodAntiAffinity: true         # Activates anti-affinity
+    podAntiAffinityType: required       # Forces one pod per node
+    topologyKey: "kubernetes.io/hostname" # Default
 
   storage:
     size: 20Gi # Reminder: Can expand later, but cannot shrink
