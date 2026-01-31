@@ -1,0 +1,54 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-shared
+  namespace: databases
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16
+
+  # Spread across your 3 Talos worker nodes
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            cnpg.io/cluster: postgres-shared
+        topologyKey: "kubernetes.io/hostname"
+
+  storage:
+    size: 20Gi
+    storageClass: ceph-nvme
+
+  monitoring:
+    enablePodMonitor: true
+
+  # Single shared credential configuration
+  bootstrap:
+    initdb:
+      database: app_db
+      owner: app_user
+      secret:
+        name: postgres-credentials
+
+---
+# Direct TCP Access for Developers
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-external-lb
+  namespace: databases
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: "10.20.20.201" # Fixed IP for DNS
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP
+    name: postgres
+  selector:
+    cnpg.io/cluster: postgres-shared
+    cnpg.io/instanceRole: primary # Always routes to the current writer

@@ -88,4 +88,11 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: databases
+  labels:
+    name: databases
+---
+apiVersion: v1
+kind: Namespace
+metadata:
   name: test-apps
