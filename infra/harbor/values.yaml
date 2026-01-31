@@ -74,6 +74,7 @@ secretKey: "not-used-override-in-secret"
 # ---------------------------------------------------------
 
 core:
+  secretAnnotations: {}
   # Resources
   resources:
     requests:
@@ -84,6 +85,7 @@ core:
       cpu: "1000m"
 
 jobservice:
+  secretAnnotations: {}
   # Secret Mapping
   existingSecret: "harbor-core-secrets"
   existingSecretKey: "JOBSERVICE_SECRET"
@@ -98,7 +100,9 @@ jobservice:
       cpu: "1000m"
 
 registry:
+  secretAnnotations: {}
   registry:
+    secretAnnotations: {}
     # Secret Mapping
     existingSecret: "harbor-core-secrets"
     existingSecretKey: "REGISTRY_HTTP_SECRET"
