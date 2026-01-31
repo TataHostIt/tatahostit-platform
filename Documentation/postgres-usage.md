@@ -19,3 +19,25 @@
 - **Storage:** 20Gi Ceph NVMe RBD per instance
 - **Platform:** Talos Kubernetes
 - **Backup/DR:** Managed by CloudNativePG Operator
+
+# Database Connectivity Guide
+
+## For Applications (Internal)
+All apps in the cluster can reach the primary (writeable) DB using this URL:
+**Host:** `postgres-shared-rw.databases.svc.cluster.local`  
+**Port:** `5432`
+
+## For Developers (External)
+Connect using your local dev tools (DBeaver, DataGrip) via:
+**Host:** `postgresdb-dev.internal.tatahostit.com`  
+**IP:** `10.20.20.201`  
+**Port:** `5432`
+
+## Credentials
+- **Superuser:** `postgres`
+- **App User:** `app_user`
+- **Shared Password:** Get from the admin (stored in SealedSecrets).
+
+## Operations
+- **Expand Storage:** Increase `storage.size` in `postgres-cluster.yaml`. Expansion is online/instant with Ceph. 
+- **Monitoring:** Open Grafana and search for the "CloudNativePG" dashboard.

@@ -4,12 +4,12 @@ metadata:
   name: postgres-shared
   namespace: databases
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "2" # Higher wave to ensure CRDs exist
 spec:
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:16
 
-  # Spread across your 3 Talos worker nodes
+  # Spread pods across your 3 nodes
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -19,13 +19,12 @@ spec:
         topologyKey: "kubernetes.io/hostname"
 
   storage:
-    size: 20Gi
+    size: 20Gi # Reminder: Can expand later, but cannot shrink
     storageClass: ceph-nvme
 
   monitoring:
     enablePodMonitor: true
 
-  # Single shared credential configuration
   bootstrap:
     initdb:
       database: app_db
@@ -34,14 +33,14 @@ spec:
         name: postgres-credentials
 
 ---
-# Direct TCP Access for Developers
+# Direct TCP Access for Developers (Layer 4)
 apiVersion: v1
 kind: Service
 metadata:
   name: postgres-external-lb
   namespace: databases
   annotations:
-    metallb.universe.tf/loadBalancerIPs: "10.20.20.201" # Fixed IP for DNS
+    metallb.universe.tf/loadBalancerIPs: "10.20.20.201"
 spec:
   type: LoadBalancer
   ports:
@@ -51,4 +50,4 @@ spec:
     name: postgres
   selector:
     cnpg.io/cluster: postgres-shared
-    cnpg.io/instanceRole: primary # Always routes to the current writer
+    cnpg.io/instanceRole: primary
