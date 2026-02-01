@@ -1,3 +1,7 @@
+# Top-level strategy in your values.yaml
+updateStrategy:
+  type: Recreate
+
 expose:
   type: ingress
   tls:
