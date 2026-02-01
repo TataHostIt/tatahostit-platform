@@ -48,12 +48,15 @@ spec:
         factor: 2            # Double the wait each time (10s, 20s, 40s...)
         maxDuration: "3m"    # Cap the wait at 3 minutes
   ignoreDifferences:
+    # 1. Ignore Secret data changes that trigger checksum updates
     - group: ""
       kind: Secret
-      name: harbor-core-secrets # Prevent Argo from fighting over the encrypted content
+      name: harbor-core-secrets
       jsonPointers:
         - /data
+    # 2. Ignore the checksum annotation that Harbor adds to deployments
     - group: apps
       kind: Deployment
       jsonPointers:
-        - /spec/template/metadata/annotations/checksum~1secret # Ignore checksum restarts
+        - /spec/template/metadata/annotations/checksum~1secret
+        - /spec/template/metadata/annotations/checksum~1config
