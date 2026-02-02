@@ -4,7 +4,8 @@ metadata:
   name: mongodb
   namespace: argocd
   labels:
-    infra-component: databases
+    component: database
+    type: mongo
   annotations:
     argocd.argoproj.io/sync-wave: "-2"
 spec:
