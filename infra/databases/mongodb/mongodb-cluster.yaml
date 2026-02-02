@@ -13,6 +13,7 @@ spec:
   crVersion: "1.21.2"
   image: "percona/percona-server-mongodb:7.0.28-15"
   imagePullPolicy: IfNotPresent
+  updateStrategy: SmartUpdate
 
   # Secrets reference
   secrets:
@@ -23,18 +24,9 @@ spec:
   replsets:
     - name: rs0
       size: 3
-      # Standard Kubernetes Affinity
+
       affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
-                matchLabels:
-                  app.kubernetes.io/name: percona-server-mongodb
-                  app.kubernetes.io/instance: mongodb-cluster
-                  app.kubernetes.io/component: mongodb
-                topologyKey: "kubernetes.io/hostname"
-      # The Operator automatically generates the complex podAntiAffinity rule from this.
-      # antiAffinityTopologyKey: "kubernetes.io/hostname"
+        antiAffinityTopologyKey: "kubernetes.io/hostname"
 
       podDisruptionBudget:
         maxUnavailable: 1
@@ -76,9 +68,13 @@ spec:
             indexConfig:
               prefixCompression: true
 
+  # Sharding configuration
+  sharding:
+    enabled: false
+
   # Backup configuration
-#  backup:
-#    enabled: true
+  backup:
+    enabled: false
 #    image: percona/percona-backup-mongodb:2.12.0
 #    serviceAccountName: percona-server-mongodb-operator
 #
