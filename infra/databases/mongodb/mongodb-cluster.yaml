@@ -54,6 +54,11 @@ spec:
         serviceAnnotations:
           metallb.universe.tf/address-pool: production-pool
 
+      storage:
+        wiredTiger:
+          engineConfig:
+            cacheSizeRatio: 0.5
+
       configuration: |
         operationProfiling:
           mode: slowOp
