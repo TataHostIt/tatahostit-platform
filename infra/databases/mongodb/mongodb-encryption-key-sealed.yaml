@@ -4,6 +4,9 @@ kind: SealedSecret
 metadata:
   name: mongodb-cluster-encryption-key
   namespace: mongodb
+  metadata:
+    annotations:
+      argocd.argoproj.io/sync-wave: "-2"
 spec:
   encryptedData:
     encryption-key: AgBpYgJBA9LnYTHiEFNo+1pAd0jzA8RnZx0FYGR6STbmTCnKeMvjZuSQzCbH/F+R9+XQ9SGkx+FkuPUHEeIsFlMhChKpnqeoY+CgyVEpBIdfgMhT4/X7lTQr2oAcGB1WRYFjUAerqtXg/wQj4kxJkeTIF0/1XLt2L6iyqEYSz7emKoeSNwZ4tYCjqG5i1DZNvqXMUWG73Ooo+RBF8yRbtmtc6cR+WYbk48P0cqW9dR0eEnI+IIlI8bwiOvaBv+nWcLJ1RkDqeVn/jGV09XRUPZzcnk5uu4ujHSiSO4wTGAOjS0HbplqvWexjxULnEI/I+Oxzr3P1CqrdnftY05L9L3US2q1qImdIuUeAhaStTtwZ6o4J4QdIZnl0Dp+b2fPMnqVZlPTbKRyhKRyj/rVkJLWwck+I0HhgQV3eM5x+UqnXedk7iZUPlLrJduQgpYpr5VKyq6K8aZpb7WmM0RQHVzkourVXeGuPkfWCs+7x5aIpszxw3Vyqs4KmNLjYejTrKXogcAzULHV8t40J6+KvaUwXDwc/LGPBg/+I6UUOjPXdHMqwSfK3qDfgv/ojWXxxRSUUv47O5+SkRNe05Z/zcrr3RYx+N91GRkX1aG9Al5yuFELl/7S167tnKFZa99fUou9dAmKDIYkmJH0o54lTv9Be7h+P3LXlgbh6MVrf4N0a6va8LWSiAKIiuuXf2Yn9BcyU6mC5WYetlDBLUxpT1gnVUW+nm2eZL5OZvNSfR4M7yw==
