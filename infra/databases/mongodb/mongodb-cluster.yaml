@@ -75,7 +75,7 @@ spec:
   # Backup configuration
   backup:
     enabled: false
-#    image: percona/percona-backup-mongodb:2.12.0
+    image: percona/percona-backup-mongodb:2.12.0
 #    serviceAccountName: percona-server-mongodb-operator
 #
 #    storages:
