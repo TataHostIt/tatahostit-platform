@@ -61,7 +61,7 @@ spec:
         storage:
           wiredTiger:
             engineConfig:
-              cacheSizeRatio: 0.5
+              # cacheSizeRatio: 0.5
               directoryForIndexes: true
             collectionConfig:
               blockCompressor: snappy
