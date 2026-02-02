@@ -23,9 +23,18 @@ spec:
   replsets:
     - name: rs0
       size: 3
-
+      # Standard Kubernetes Affinity
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: percona-server-mongodb
+                  app.kubernetes.io/instance: mongodb-cluster
+                  app.kubernetes.io/component: mongodb
+                topologyKey: "kubernetes.io/hostname"
       # The Operator automatically generates the complex podAntiAffinity rule from this.
-      antiAffinityTopologyKey: "kubernetes.io/hostname"
+      # antiAffinityTopologyKey: "kubernetes.io/hostname"
 
       podDisruptionBudget:
         maxUnavailable: 1
