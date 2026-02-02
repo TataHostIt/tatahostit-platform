@@ -18,7 +18,6 @@ spec:
   # Secrets reference
   secrets:
     users: mongodb-cluster-secrets
-    encryptionKey: mongodb-cluster-encryption-key
 
   # Replica set configuration
   replsets:
