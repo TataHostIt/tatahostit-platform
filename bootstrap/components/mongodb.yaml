@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: mongodb-cluster
+  name: mongodb
   namespace: argocd
   labels:
     component: database
