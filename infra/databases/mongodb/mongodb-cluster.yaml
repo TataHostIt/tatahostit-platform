@@ -76,34 +76,34 @@ spec:
               prefixCompression: true
 
   # Backup configuration
-  backup:
-    enabled: true
-    image: percona/percona-backup-mongodb:2.12.0
-    serviceAccountName: percona-server-mongodb-operator
-
-    storages:
-      ceph-local:
-        type: filesystem
-        # FIX 2: Correct field name is volumeSpec
-        volumeSpec:
-          persistentVolumeClaim:
-            storageClassName: sc-hdd
-            accessModes: ["ReadWriteOnce"]
-            resources:
-              requests:
-                storage: 200Gi
-
-    pitr:
-      enabled: true
-      oplogSpanMin: 10
-
-    tasks:
-      - name: daily-backup
-        enabled: true
-        schedule: "0 2 * * *"
-        keep: 30
-        storageName: ceph-local
-        compressionType: gzip
+#  backup:
+#    enabled: true
+#    image: percona/percona-backup-mongodb:2.12.0
+#    serviceAccountName: percona-server-mongodb-operator
+#
+#    storages:
+#      ceph-local:
+#        type: filesystem
+#        # FIX 2: Correct field name is volumeSpec
+#        volumeSpec:
+#          persistentVolumeClaim:
+#            storageClassName: sc-hdd
+#            accessModes: ["ReadWriteOnce"]
+#            resources:
+#              requests:
+#                storage: 200Gi
+#
+#    pitr:
+#      enabled: true
+#      oplogSpanMin: 10
+#
+#    tasks:
+#      - name: daily-backup
+#        enabled: true
+#        schedule: "0 2 * * *"
+#        keep: 30
+#        storageName: ceph-local
+#        compressionType: gzip
 
   # Monitoring
   pmm:
