@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mongodb-operator
+  namespace: argocd
+  labels:
+    component: database
+    type: psmdb-operator
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  project: default
+  sources:
+    # Source 1: The Percona Helm Chart
+    - repoURL: 'https://percona.github.io/percona-helm-charts'
+      chart: psmdb-operator
+      targetRevision: 1.21.2
+      helm:
+        # This tells Helm to look for the values file inside Source 2
+        valueFiles:
+          - "$values/infra/databases/mongodb/operator-values.yaml"
+
+    # Source 2: Git Repo (assigned the alias 'values')
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: mongodb
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: "5s"
+        factor: 2
+        maxDuration: "3m"

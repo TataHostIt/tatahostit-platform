@@ -1,18 +1,33 @@
 # Percona MongoDB Operator Helm Values
-# Manages MongoDB cluster lifecycle, backups, and monitoring
+# Target Version: 1.21.2
 
-operator:
-  watchNamespace: "mongodb"  # Watch only mongodb namespace
-  
+# 1. Telemetry - Disable for private lab privacy
+disableTelemetry: true
+
+# 2. Scoping - Ensure it only looks at your 'mongodb' namespace
+# In 1.21.2, these two work together
+watchNamespace: "mongodb"
+watchAllNamespaces: false
+
+# 3. Resources - Tuned for your older CPU nodes to avoid OOM or slow reconciliation
 resources:
   limits:
     cpu: "500m"
     memory: "512Mi"
   requests:
-    cpu: "100m"
-    memory: "128Mi"
+    cpu: "250m"  # Bumped slightly to ensure responsive failovers
+    memory: "256Mi"
 
+# 4. RBAC & Service Account
 rbac:
   create: true
+serviceAccount:
+  create: true
 
-imagePullPolicy: IfNotPresent
+# 5. Image Management
+image:
+  tag: 1.21.2
+  pullPolicy: IfNotPresent
+
+# 6. Concurrency - For a single lab cluster, 1 worker is sufficient
+maxConcurrentReconciles: "1"
