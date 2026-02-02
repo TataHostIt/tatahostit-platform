@@ -6,7 +6,7 @@ metadata:
   labels:
     infra-component: databases
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-wave: "-2"
 spec:
   project: default
   
@@ -14,7 +14,7 @@ spec:
     # Percona MongoDB Operator Helm Chart
     - repoURL: 'https://percona.github.io/percona-helm-charts'
       chart: psmdb-operator
-      targetRevision: 1.16.0
+      targetRevision: 1.21.2
       helm:
         valueFiles:
           - "$values/infra/databases/mongodb/operator-values.yaml"
