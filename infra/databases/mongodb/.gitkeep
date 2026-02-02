@@ -1,0 +1,13 @@
+# MongoDB HA Cluster Infrastructure
+
+This directory contains all Kubernetes manifests for the MongoDB HA cluster deployment:
+
+- `operator-values.yaml` - Helm values for Percona MongoDB Operator
+- `mongodb-cluster.yaml` - PerconaServerMongoDB custom resource
+- `mongodb-secrets-sealed.yaml` - Sealed secrets for MongoDB credentials
+- `mongodb-encryption-key-sealed.yaml` - Sealed encryption key
+- `mongodb-loadbalancer.yaml` - MetalLB LoadBalancer service
+- `mongodb-servicemonitor.yaml` - Prometheus ServiceMonitor
+- `mongodb-alerts.yaml` - PrometheusRule for alerting
+
+The ArgoCD Application manifest is located at `bootstrap/components/mongodb.yaml`.

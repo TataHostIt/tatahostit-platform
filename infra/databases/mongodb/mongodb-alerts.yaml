@@ -1,0 +1,49 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: mongodb-alerts
+  namespace: mongodb
+  labels:
+    release: kube-prometheus-stack
+    app.kubernetes.io/name: mongodb
+    infra-component: databases
+spec:
+  groups:
+    - name: mongodb
+      interval: 30s
+      rules:
+        - alert: MongoDBReplicaSetMemberDown
+          expr: mongodb_rs_members_health == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "MongoDB replica set member is down"
+            description: "Member {{ $labels.member }} in replica set {{ $labels.replset }} has been down for more than 5 minutes"
+        
+        - alert: MongoDBReplicationLagHigh
+          expr: mongodb_rs_members_optimeDate - on(replset) group_right mongodb_rs_members_optimeDate{member_state="PRIMARY"} > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "MongoDB replication lag is high"
+            description: "Replication lag on {{ $labels.member }} is {{ $value }} seconds"
+        
+        - alert: MongoDBStorageUsageHigh
+          expr: (mongodb_ss_wt_block_manager_bytes_currently_in_the_cache / mongodb_ss_wt_block_manager_maximum_bytes_configured) > 0.8
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "MongoDB storage usage is high"
+            description: "Storage usage on {{ $labels.pod }} is above 80%"
+        
+        - alert: MongoDBBackupFailed
+          expr: increase(mongodb_backup_last_error[1h]) > 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "MongoDB backup has failed"
+            description: "Backup job for MongoDB cluster has failed in the last hour"

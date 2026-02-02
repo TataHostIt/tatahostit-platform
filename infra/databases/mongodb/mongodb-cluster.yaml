@@ -1,0 +1,111 @@
+apiVersion: psmdb.percona.com/v1
+kind: PerconaServerMongoDB
+metadata:
+  name: mongodb-cluster
+  namespace: mongodb
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"  # Force this to run AFTER the operator
+  labels:
+    app.kubernetes.io/name: mongodb
+    app.kubernetes.io/component: database
+    infra-component: databases
+spec:
+  crVersion: "1.16.0"
+  image: "percona/percona-server-mongodb:7.0.8-5"
+  imagePullPolicy: IfNotPresent
+  
+  # Secrets reference
+  secrets:
+    users: mongodb-cluster-secrets
+    encryptionKey: mongodb-cluster-encryption-key
+  
+  # Replica set configuration
+  replsets:
+    - name: rs0
+      size: 3
+      antiAffinityTopologyKey: "kubernetes.io/hostname"
+      expose:
+        enabled: true
+        exposeType: LoadBalancer
+        # This automatically creates services for EACH pod,
+        # allowing external drivers to find the Primary correctly.
+        # This annotation tells MetalLB: "Give me an IP from the 'production-pool' only"
+        serviceAnnotations:
+          metallb.universe.tf/address-pool: production-pool
+
+      podDisruptionBudget:
+        maxUnavailable: 1
+      
+      resources:
+        limits:
+          cpu: "2000m"
+          memory: "4Gi"
+        requests:
+          cpu: "500m"
+          memory: "2Gi"
+      
+      volumeSpec:
+        persistentVolumeClaim:
+          storageClassName: sc-nvme
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+      
+      # MongoDB configuration
+      configuration: |
+        operationProfiling:
+          mode: slowOp
+          slowOpThresholdMs: 100
+        storage:
+          wiredTiger:
+            engineConfig:
+              cacheSizeRatio: 0.5
+              directoryForIndexes: true
+            collectionConfig:
+              blockCompressor: snappy
+            indexConfig:
+              prefixCompression: true
+  
+  # Backup configuration
+  backup:
+    enabled: true
+    image: percona/percona-backup-mongodb:2.4.1
+    serviceAccountName: percona-server-mongodb-operator
+    
+    storages:
+      ceph-local:
+        type: filesystem
+        volume:
+          persistentVolumeClaim:
+            storageClassName: sc-hdd  # Use HDD for backup storage (cost-effective)
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 200Gi
+    
+    pitr:
+      enabled: true
+      oplogSpanMin: 10
+    
+    tasks:
+      - name: daily-backup
+        enabled: true
+        schedule: "0 2 * * *"
+        keep: 30
+        storageName: ceph-local
+        compressionType: gzip
+  
+  # Monitoring with PMM
+  pmm:
+    enabled: true
+    image: percona/pmm-client:2.41.2
+    serverHost: prometheus-operated.monitoring.svc.cluster.local
+    
+    resources:
+      limits:
+        cpu: "300m"
+        memory: "256Mi"
+      requests:
+        cpu: "100m"
+        memory: "128Mi"

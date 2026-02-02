@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mongodb
+  namespace: argocd
+  labels:
+    infra-component: databases
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: default
+  
+  sources:
+    # Percona MongoDB Operator Helm Chart
+    - repoURL: 'https://percona.github.io/percona-helm-charts'
+      chart: psmdb-operator
+      targetRevision: 1.16.0
+      helm:
+        valueFiles:
+          - "$values/infra/databases/mongodb/operator-values.yaml"
+    
+    # Values reference
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      ref: values
+    
+    # MongoDB cluster manifests (CR, secrets, services, monitoring)
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      path: infra/databases/mongodb
+      directory:
+        recurse: true
+        exclude: '{operator-values.yaml}'
+  
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: mongodb
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

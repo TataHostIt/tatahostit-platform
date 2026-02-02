@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mongodb-cluster
+  namespace: mongodb
+  labels:
+    release: kube-prometheus-stack
+    app.kubernetes.io/name: mongodb
+    infra-component: databases
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: percona-server-mongodb
+      app.kubernetes.io/instance: mongodb-cluster
+  endpoints:
+    - port: pmm-metrics
+      interval: 30s
+      path: /metrics

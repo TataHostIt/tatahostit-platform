@@ -1,0 +1,18 @@
+# Percona MongoDB Operator Helm Values
+# Manages MongoDB cluster lifecycle, backups, and monitoring
+
+operator:
+  watchNamespace: "mongodb"  # Watch only mongodb namespace
+  
+resources:
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+
+rbac:
+  create: true
+
+imagePullPolicy: IfNotPresent
