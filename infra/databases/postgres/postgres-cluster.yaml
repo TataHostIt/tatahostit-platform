@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1" # Higher wave to ensure CRDs exist
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:18
+  imageName: ghcr.io/cloudnative-pg/postgresql:17
 
   # Corrected CNPG Affinity Schema
   affinity:
