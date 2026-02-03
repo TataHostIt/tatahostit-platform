@@ -4,7 +4,7 @@ metadata:
   name: postgres-shared
   namespace: postgres
   annotations:
-    argocd.argoproj.io/sync-wave: "-1" # Higher wave to ensure CRDs exist
+    argocd.argoproj.io/sync-wave: "1" # Higher wave to ensure CRDs exist
 spec:
   instances: 3
   # https://github.com/cloudnative-pg/artifacts/blob/main/image-catalogs/catalog-standard-bookworm.yaml
