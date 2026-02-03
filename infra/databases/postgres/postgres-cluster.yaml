@@ -7,7 +7,9 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1" # Higher wave to ensure CRDs exist
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:17
+  # https://github.com/cloudnative-pg/artifacts/blob/main/image-catalogs/catalog-standard-bookworm.yaml
+  # postgres 17
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.7-202602020815-standard-bookworm@sha256:06c79ca5a39f51ffde94195fcd813d2436d1bca5a5bb3b9f522ff4e3b6194f7c
 
   # Corrected CNPG Affinity Schema
   affinity:
