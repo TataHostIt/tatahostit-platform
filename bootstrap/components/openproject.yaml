@@ -11,7 +11,7 @@ spec:
     # Source 1: The Helm Chart
     - repoURL: 'https://charts.openproject.org'
       chart: openproject
-      targetRevision: 17.0.2
+      targetRevision: 13.1.0
       helm:
         valueFiles:
           # This '$values' now refers to the 'ref' in Source 2 below
