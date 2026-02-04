@@ -17,10 +17,17 @@ spec:
           # This '$values' now refers to the 'ref' in Source 2 below
           - $values/infra/openproject/values.yaml
 
-    # Source 2: Personal Git Repository
+    # Source 2: Your Git Repo for the values file reference
     - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
       targetRevision: HEAD
-      ref: values # This 'ref' matches the '$values' prefix above
+      ref: values
+
+    # Source 3: Your Git Repo for the Secret/Manifests
+    # This tells ArgoCD to look in the folder and apply any YAML files found there
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      path: infra/openproject # Folder containing your SealedSecret.yaml
+
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: openproject
@@ -28,7 +35,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
-      allowEmpty: false
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
