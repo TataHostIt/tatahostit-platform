@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openproject
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  source:
+    repoURL: 'https://charts.openproject.org'
+    chart: openproject
+    targetRevision: 13.1.0 # https://github.com/opf/helm-charts/releases
+    helm:
+      valueFiles:
+        - $values/infra/openproject/values.yaml
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: openproject
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: "5s"
+        factor: 2
+        maxDuration: "3m"

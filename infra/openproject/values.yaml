@@ -1,0 +1,61 @@
+# 1. OpenProject Core Settings
+openproject:
+  # Enable HTTPS for session security
+  https: true
+  
+  # Initial Admin User Seeding (Only applies on first run)
+  admin_user:
+    mail: "tatahostit@gmail.com"
+    name: "System Administrator"
+    password_reset: "false"
+    # Use the 'secret' key to link your SealedSecret
+    secret: "openproject-admin-secrets"
+    secretKeys:
+      password: "ADMIN_PASSWORD"
+
+  persistence:
+    enabled: true
+    storageClass: "sc-nvme"
+    size: 20Gi
+    # Change to RWO since you are using Ceph RBD and 1 replica
+    accessModes:
+      - "ReadWriteOnce"
+
+# 2. Database Configuration
+# Note: This chart uses the 'postgresql' block for both bundled and external DBs.
+postgresql:
+  bundled: false
+  connection:
+    host: "postgres-shared-rw.postgres.svc.cluster.local"
+    port: 5432
+  auth:
+    # Use the reflected secret from the postgres namespace
+    existingSecret: "openproject-db-creds"
+    username: "openproject_user"
+    database: "openproject"
+    secretKeys:
+      userPasswordKey: "password"
+
+# 3. Environment Variables (Secret References)
+# We use extraEnvVars for secret references to avoid quoting errors
+extraEnvVars:
+  - name: OPENPROJECT_SECRET_KEY_BASE
+    valueFrom:
+      secretKeyRef:
+        name: openproject-admin-secrets
+        key: SECRET_KEY_BASE
+
+# 4. Ingress & Exposure
+ingress:
+  enabled: true
+  ingressClassName: "nginx-public"
+  host: "openproject.tatahostit.com"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+  tls:
+    enabled: true
+    secretName: "openproject-tls"
+
+# 5. Resource Sizing
+replicaCount: 1
