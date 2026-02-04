@@ -7,13 +7,20 @@ metadata:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
-  source:
-    repoURL: 'https://charts.openproject.org'
-    chart: openproject
-    targetRevision: 13.1.0 # https://github.com/opf/helm-charts/releases
-    helm:
-      valueFiles:
-        - $values/infra/openproject/values.yaml
+  sources:
+    # Source 1: The Helm Chart
+    - repoURL: 'https://charts.openproject.org'
+      chart: openproject
+      targetRevision: 13.1.0
+      helm:
+        valueFiles:
+          # This '$values' now refers to the 'ref' in Source 2 below
+          - $values/infra/openproject/values.yaml
+
+    # Source 2: Personal Git Repository
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      ref: values # This 'ref' matches the '$values' prefix above
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: openproject

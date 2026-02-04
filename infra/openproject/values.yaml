@@ -1,14 +1,12 @@
 # 1. OpenProject Core Settings
 openproject:
-  # Enable HTTPS for session security
   https: true
-  
-  # Initial Admin User Seeding (Only applies on first run)
+
+  # Admin User Seeding (Initial run only)
   admin_user:
     mail: "tatahostit@gmail.com"
     name: "System Administrator"
     password_reset: "false"
-    # Use the 'secret' key to link your SealedSecret
     secret: "openproject-admin-secrets"
     secretKeys:
       password: "ADMIN_PASSWORD"
@@ -21,23 +19,21 @@ openproject:
     accessModes:
       - "ReadWriteOnce"
 
-# 2. Database Configuration
-# Note: This chart uses the 'postgresql' block for both bundled and external DBs.
+# 2. Database Configuration (External CNPG)
 postgresql:
   bundled: false
   connection:
     host: "postgres-shared-rw.postgres.svc.cluster.local"
     port: 5432
   auth:
-    # Use the reflected secret from the postgres namespace
+    # This points to the secret Reflector automatically mirrors
     existingSecret: "openproject-db-creds"
-    username: "openproject_user"
+    username: "openproject-user" # Matches the role in Cluster manifest
     database: "openproject"
     secretKeys:
       userPasswordKey: "password"
 
-# 3. Environment Variables (Secret References)
-# We use extraEnvVars for secret references to avoid quoting errors
+# 3. Rails Secret Key Base
 extraEnvVars:
   - name: OPENPROJECT_SECRET_KEY_BASE
     valueFrom:
@@ -45,7 +41,7 @@ extraEnvVars:
         name: openproject-admin-secrets
         key: SECRET_KEY_BASE
 
-# 4. Ingress & Exposure
+# 4. Ingress Configuration
 ingress:
   enabled: true
   ingressClassName: "nginx-public"
@@ -55,7 +51,7 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
   tls:
     enabled: true
-    secretName: "openproject-tls"
+    secretName: "openproject.tatahostit.com-tls"
 
 # 5. Resource Sizing
 replicaCount: 1
