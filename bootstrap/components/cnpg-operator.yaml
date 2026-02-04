@@ -11,16 +11,11 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/cloudnative-pg/cloudnative-pg.git'
-    targetRevision: v1.28.0
-    # Point to the FOLDER, not the file
-    path: releases
-    directory:
-      # Specify the exact file to process
-      include: "cnpg-1.28.0.yaml"
+    chart: cloudnative-pg
+    repoURL: https://cloudnative-pg.github.io/charts
+    targetRevision: 0.27.0 # Get latest from https://github.com/cloudnative-pg/charts/releases
   destination:
     server: "https://kubernetes.default.svc"
-    # The manifest includes the namespace, but ArgoCD needs this for tracking
     namespace: cnpg-system
   syncPolicy:
     automated:
