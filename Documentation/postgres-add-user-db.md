@@ -70,6 +70,9 @@ spec:
       # Add the new role here
       - name: <app-user-name>
         login: true
+        ensure: present
+        inherit: true
+        connectionLimit: -1
         passwordSecret:
           name: <app-name>-db-creds # Matches the Secret name from Step 1
 

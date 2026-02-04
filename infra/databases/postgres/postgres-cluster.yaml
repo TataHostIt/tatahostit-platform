@@ -35,14 +35,23 @@ spec:
     roles:
       - name: openproject-user
         login: true
+        ensure: present
+        inherit: true
+        connectionLimit: -1
         passwordSecret:
           name: openproject-db-creds
       - name: harbor-user
         login: true
+        ensure: present
+        inherit: true
+        connectionLimit: -1
         passwordSecret:
           name: harbor-db-creds
       - name: litellm-user
         login: true
+        ensure: present
+        inherit: true
+        connectionLimit: -1
         passwordSecret:
           name: litellm-db-creds
 
