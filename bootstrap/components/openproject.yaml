@@ -44,3 +44,17 @@ spec:
         duration: "5s"
         factor: 2
         maxDuration: "3m"
+  ignoreDifferences:
+    # 1. Ignore the invalid 'port' field in the Deployment schema
+    - group: apps
+      kind: Deployment
+      name: openproject-hocuspocus
+      jsonPointers:
+        - /spec/template/spec/containers/0/ports/0/port
+
+    # 2. Ignore the auto-generated secret data
+    - group: ""
+      kind: Secret
+      name: hocuspocus-secret-auto-generated
+      jsonPointers:
+        - /data/secret
