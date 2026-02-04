@@ -6,11 +6,21 @@ openproject:
   admin_user:
     mail: "tatahostit@gmail.com"
     name: "System Administrator"
-    password_reset: "false"
-    secret: "openproject-admin-secrets"
-    secretKeys:
-      password: "ADMIN_PASSWORD"
+    password_reset: "true"
+#    secret: "openproject-admin-secrets"
+#    secretKeys:
+#      password: "ADMIN_PASSWORD"
+    password: "admin"
   tmpVolumesStorageClassName: "sc-nvme"
+
+hocuspocus:
+  enabled: true
+  # We override the container port to ensure only valid fields are passed
+  containerPort: 1234
+  # If the error persists, we may need to specifically nullify the leaked 'port' field
+  # by ensuring it isn't being pulled from a global service setting.
+  service:
+    port: 1234
 
 persistence:
   enabled: true
@@ -44,7 +54,7 @@ extraEnvVars:
 # 4. Ingress Configuration
 ingress:
   enabled: true
-  ingressClassName: "nginx-public"
+  ingressClassName: "nginx"
   host: "openproject.tatahostit.com"
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
