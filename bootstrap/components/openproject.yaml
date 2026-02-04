@@ -8,6 +8,12 @@ metadata:
 spec:
   project: default
   sources:
+    # Source 1: Your Git Repo for the Secret/Manifests
+    # This tells ArgoCD to look in the folder and apply any YAML files found there
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      path: infra/openproject
+
     # Source 1: The Helm Chart
     - repoURL: 'https://charts.openproject.org'
       chart: openproject
@@ -21,12 +27,6 @@ spec:
     - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
       targetRevision: HEAD
       ref: values
-
-    # Source 3: Your Git Repo for the Secret/Manifests
-    # This tells ArgoCD to look in the folder and apply any YAML files found there
-    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
-      targetRevision: HEAD
-      path: infra/openproject # Folder containing your SealedSecret.yaml
 
   destination:
     server: 'https://kubernetes.default.svc'
