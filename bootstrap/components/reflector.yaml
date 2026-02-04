@@ -9,6 +9,7 @@ spec:
     repoURL: 'https://emberstack.github.io/helm-charts'
     chart: reflector
     targetRevision: 10.0.4
+    # https://github.com/emberstack/kubernetes-reflector/releases, https://github.com/emberstack/kubernetes-reflector/pkgs/container/helm-charts%2Freflector
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: kube-system

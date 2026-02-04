@@ -1,0 +1,12 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: harbor-db
+  namespace: postgres
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  name: harbor
+  owner: harbor-user
+  cluster:
+    name: postgres-shared

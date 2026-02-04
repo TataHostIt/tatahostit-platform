@@ -4,14 +4,14 @@ metadata:
   name: postgres-shared
   namespace: postgres
   annotations:
-    argocd.argoproj.io/sync-wave: "1" # Higher wave to ensure CRDs exist
+    argocd.argoproj.io/sync-wave: "1" # Higher wave to ensure Secrets exist
 spec:
   instances: 3
   # https://github.com/cloudnative-pg/artifacts/blob/main/image-catalogs/catalog-standard-bookworm.yaml
   # postgres 17
   imageName: ghcr.io/cloudnative-pg/postgresql:17.7-202602020815-standard-bookworm@sha256:06c79ca5a39f51ffde94195fcd813d2436d1bca5a5bb3b9f522ff4e3b6194f7c
 
-  # Corrected CNPG Affinity Schema
+  # CNPG Affinity Schema
   affinity:
     enablePodAntiAffinity: true         # Activates anti-affinity
     podAntiAffinityType: required       # Forces one pod per node
@@ -30,6 +30,21 @@ spec:
       owner: app_user
       secret:
         name: postgres-credentials
+  # Add new users as required here. Best to create it with existing secret.
+  managed:
+    roles:
+      - name: openproject-user
+        login: true
+        passwordSecret:
+          name: openproject-db-creds
+      - name: harbor-user
+        login: true
+        passwordSecret:
+          name: harbor-db-creds
+      - name: litellm-user
+        login: true
+        passwordSecret:
+          name: litellm-db-creds
 
 ---
 # Direct TCP Access for Developers (Layer 4)

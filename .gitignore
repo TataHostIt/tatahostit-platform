@@ -1,3 +1,5 @@
 master-key-backup.yaml
 .idea
-.idea/
+.kiro
+*-secrets.yaml
+*-secret.yaml

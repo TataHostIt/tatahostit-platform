@@ -19,8 +19,10 @@ kind: Database
 metadata:
   name: openproject-db
   namespace: postgres
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   name: openproject
-  owner: openproject_user
+  owner: openproject-user
   cluster:
     name: postgres-shared

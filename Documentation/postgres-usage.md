@@ -2,11 +2,11 @@
 
 ## Connectivity Overview
 
-| Connection Type | Target URL / Host | Purpose |
-| :--- | :--- | :--- |
-| **Cluster Internal** | `postgres-shared-rw.databases.svc.cluster.local` | For apps like LiteLLM/Keycloak |
-| **Developer DNS** | `postgresdb-dev.internal.tatahostit.com` | Primary access for dev tools (DBeaver, etc) |
-| **Static IP** | `10.20.20.201` | Direct access if DNS is unavailable |
+| Connection Type | Target URL / Host                               | Purpose |
+| :--- |:------------------------------------------------| :--- |
+| **Cluster Internal** | `postgres-shared-rw.postgres.svc.cluster.local` | For apps like LiteLLM/Keycloak |
+| **Developer DNS** | `postgresdb-dev.internal.tatahostit.com`        | Primary access for dev tools (DBeaver, etc) |
+| **Static IP** | `10.20.20.201`                                  | Direct access if DNS is unavailable |
 
 ## User Access
 - **Port:** `5432`
