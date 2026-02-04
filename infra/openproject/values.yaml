@@ -10,15 +10,15 @@ openproject:
     secret: "openproject-admin-secrets"
     secretKeys:
       password: "ADMIN_PASSWORD"
+  tmpVolumesStorageClassName: "sc-nvme"
 
-  persistence:
-    enabled: true
-    storageClass: "sc-nvme"
-    size: 20Gi
-    # Change to RWO since you are using Ceph RBD and 1 replica
-    accessModes:
-      - "ReadWriteOnce"
-
+persistence:
+  enabled: true
+  storageClassName: "sc-nvme"
+  size: 20Gi
+  # Change to RWO since you are using Ceph RBD and 1 replica
+  accessModes:
+    - "ReadWriteOnce"
 # 2. Database Configuration (External CNPG)
 postgresql:
   bundled: false
