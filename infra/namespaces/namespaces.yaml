@@ -107,4 +107,12 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: litellm
+  labels:
+    name: litellm
+    infra-component: ai
+---
+apiVersion: v1
+kind: Namespace
+metadata:
   name: test-apps
