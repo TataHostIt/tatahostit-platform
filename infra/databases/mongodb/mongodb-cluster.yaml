@@ -72,6 +72,24 @@ spec:
             indexConfig:
               prefixCompression: true
 
+  users:
+    - name: agent-dev-user
+      db: admin
+      passwordSecretRef:
+        name: agent-dev-secrets
+        key: password
+      roles:
+        - name: readWrite
+          db: agent-dev
+    - name: agent-prod-user
+      db: admin
+      passwordSecretRef:
+        name: agent-prod-secrets
+        key: password
+      roles:
+        - name: readWrite
+          db: agent-prod
+
   # Sharding configuration
   sharding:
     enabled: false
