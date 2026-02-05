@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: litellm-config
+  namespace: litellm
+data:
+  config.yaml: |
+    model_list:
+      - model_name: "*"
+        litellm_params:
+          model: openai/*
+          api_key: "os.environ/OPENAI_API_KEY"
+    
+    general_settings:
+      master_key: "os.environ/LITELLM_MASTER_KEY"
+      database_url: "os.environ/DATABASE_URL"
+      store_model_in_db: true
+      proxy_base_url: "https://litellm.tatahostit.com"

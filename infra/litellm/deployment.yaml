@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: litellm
+  namespace: litellm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: litellm
+  template:
+    metadata:
+      labels:
+        app: litellm
+    spec:
+      containers:
+      - name: litellm
+        image: ghcr.io/berriai/litellm:main-latest
+        args: ["--config", "/app/config.yaml"]
+        env:
+          # Pulling the Reflector-mirrored DB connection string
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: litellm-db-creds
+                key: DATABASE_URL
+        envFrom:
+          # Pulling your API keys and UI admin credentials
+          - secretRef:
+              name: litellm-secrets
+        ports:
+          - containerPort: 4000
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config.yaml
+          subPath: config.yaml
+      volumes:
+      - name: config-volume
+        configMap:
+          name: litellm-config
