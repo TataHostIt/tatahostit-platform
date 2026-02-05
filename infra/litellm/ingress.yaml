@@ -14,7 +14,7 @@ spec:
   tls:
     - hosts:
         - litellm.tatahostit.com
-      secretName: litellm.tatahostit.com
+      secretName: litellm.tatahostit.com-tls
   rules:
     - host: litellm.tatahostit.com
       http:
