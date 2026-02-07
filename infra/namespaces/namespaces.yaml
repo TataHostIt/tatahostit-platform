@@ -116,3 +116,13 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: test-apps
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agent-dev
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agent-prod

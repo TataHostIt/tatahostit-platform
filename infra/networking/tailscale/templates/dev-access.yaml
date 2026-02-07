@@ -1,0 +1,52 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: dev-access-binding
+  namespace: voice-dev
+subjects:
+- kind: User
+  name: naresh.dhiman@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: User
+  name: tatahostit@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  # The "edit" ClusterRole is built-in to K8s.
+  # It allows read/write operations within the namespace but blocks role escalation.
+  kind: ClusterRole
+  name: edit
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: dev-access-binding
+  namespace: agent-dev
+subjects:
+- kind: User
+  name: naresh.dhiman@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: User
+  name: tatahostit@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: edit
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: dev-access-binding
+  namespace: agent-prod
+subjects:
+- kind: User
+  name: naresh.dhiman@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: User
+  name: tatahostit@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: edit
+  apiGroup: rbac.authorization.k8s.io

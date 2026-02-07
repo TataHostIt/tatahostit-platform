@@ -17,3 +17,6 @@ tailscale-operator:
 
   proxyConfig:
     defaultTags: "tag:thi-k8s-services"
+
+  podAnnotations:
+    argocd.argoproj.io/sync-wave: "5"
