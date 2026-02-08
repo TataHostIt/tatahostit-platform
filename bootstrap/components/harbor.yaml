@@ -74,3 +74,17 @@ spec:
       kind: Deployment
       name: harbor-registry
       jsonPointers: [ "/spec/template/metadata/annotations/checksum~1secret-core" ]
+    - group: apps
+      kind: Deployment
+      name: harbor-core
+      jsonPointers:
+        - /spec/template/metadata/annotations/checksum~1configmap
+        - /spec/template/metadata/annotations/checksum~1secret
+        - /spec/template/metadata/annotations/checksum~1secret-jobservice
+    - group: apps
+      kind: Deployment
+      name: harbor-registry
+      jsonPointers:
+        - /spec/template/metadata/annotations/checksum~1configmap
+        - /spec/template/metadata/annotations/checksum~1secret
+        - /spec/template/metadata/annotations/checksum~1secret-jobservice
