@@ -24,6 +24,13 @@ data:
       # 2. ROOT DOMAIN RULE (Optional)
       - hostname: "tatahostit.com"
         service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
-
+    
+      # 3. openring.ai rules
+      - hostname: "*.openring.ai"
+        service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
+      - hostname: "openring.ai"
+        service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
+      
+      - service: http_status:404
       # 3. Catch-all (Required)
       - service: http_status:404
