@@ -54,14 +54,14 @@ extraEnvVars:
 # 4. Ingress Configuration
 ingress:
   enabled: true
-  ingressClassName: "nginx"
+  ingressClassName: "nginx-public"
   host: "openproject.tatahostit.com"
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
   tls:
     enabled: true
-    secretName: "openproject.tatahostit.com-tls"
+    secretName: "openproject-tatahostit-com-tls"
 
 # 5. Resource Sizing
 replicaCount: 1
