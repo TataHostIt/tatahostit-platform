@@ -5,32 +5,22 @@ metadata:
   namespace: cloudflare-tunnel
 data:
   config.yaml: |
-    # cloudflared will authenticate via the token in the Deployment env
-    # This config only controls hostname->service routing.
-    
-    # Global settings
+    config.yaml: |
     originRequest:
-      # Trust the self-signed cert on the Nginx controller
       noTLSVerify: true
-      # Connect to Nginx via HTTP/2 (optional, improves performance)
       http2Origin: true
     
     ingress:
-      # 1. WILDCARD RULE -> Points to the NEW Public Controller
-      # Note the service name: ingress-nginx-public-controller
+      # tatahostit.com rules
       - hostname: "*.tatahostit.com"
         service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
-      
-      # 2. ROOT DOMAIN RULE (Optional)
       - hostname: "tatahostit.com"
         service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
-    
-      # 3. openring.ai rules
+
+      # NEW: openring.ai rules
       - hostname: "*.openring.ai"
         service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
       - hostname: "openring.ai"
         service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
       
-      - service: http_status:404
-      # 3. Catch-all (Required)
       - service: http_status:404
