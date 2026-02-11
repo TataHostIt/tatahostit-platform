@@ -50,6 +50,25 @@ extraEnvVars:
       secretKeyRef:
         name: openproject-admin-secrets
         key: SECRET_KEY_BASE
+  - name: OPENPROJECT_EMAIL__DELIVERY__METHOD
+    value: "smtp"
+  - name: OPENPROJECT_SMTP__ADDRESS
+    value: "smtppro.zoho.com"
+  - name: OPENPROJECT_SMTP__PORT
+    value: "587"
+  - name: OPENPROJECT_SMTP__DOMAIN
+    value: "tatahostit.com"
+  - name: OPENPROJECT_SMTP__AUTHENTICATION
+    value: "login"
+  - name: OPENPROJECT_SMTP__ENABLE__STARTTLS__AUTO
+    value: "true"
+  - name: OPENPROJECT_SMTP__USER__NAME
+    value: "admin@tatahostit.com"
+  - name: OPENPROJECT_SMTP__PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: openproject-admin-secrets
+        key: SMTP_PASSWORD # This is App-Specific Password in Zoho
 
 # 4. Ingress Configuration
 ingress:
