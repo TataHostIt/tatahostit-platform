@@ -120,9 +120,5 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: agent-dev
+  name: infisical
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: agent-prod

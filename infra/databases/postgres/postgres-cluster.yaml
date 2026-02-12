@@ -54,6 +54,13 @@ spec:
         connectionLimit: -1
         passwordSecret:
           name: litellm-db-creds
+      - name: infisical-user
+        login: true
+        ensure: present
+        inherit: true
+        connectionLimit: -1
+        passwordSecret:
+          name: infisical-db-creds
 
 ---
 # Direct TCP Access for Developers (Layer 4)
