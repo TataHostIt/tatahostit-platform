@@ -1,0 +1,38 @@
+infisical:
+  # View the latest version here https://hub.docker.com/r/infisical/infisical
+  image:
+    tag: "v0.158.2"
+
+  # Point to your existing secret for core app configuration
+  # Ensure this secret also contains ENCRYPTION_KEY and AUTH_SECRET
+  kubeSecretRef: "infisical-app-secrets"
+
+postgresql:
+  # Disable the built-in Postgres and use shared CNPG
+  enabled: false
+  useExistingPostgresSecret:
+    enabled: true
+    existingConnectionStringSecret:
+      name: "infisical-db-creds"
+      key: "DATABASE_URL"
+
+redis:
+  # Mandatory for Infisical. Keeping enabled: true creates a standalone instance inside the infisical namespace.
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+    # Tell the Redis sub-chart to use new app secret for its password
+    existingSecret: "infisical-app-secrets"
+    existingSecretPasswordKey: "REDIS_PASSWORD"
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hostName: "secrets.openring.ai"
+  tls:
+    - secretName: secrets-openring-ai-tls
+      hosts:
+        - secrets.openring.ai
