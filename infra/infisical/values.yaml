@@ -26,9 +26,8 @@ redis:
     existingSecret: "infisical-app-secrets"
     existingSecretPasswordKey: "REDIS_PASSWORD"
 
-# 1. Disable the bundled Nginx Controller sub-chart
-ingress-nginx:
-  enabled: false
 
 ingress:
   enabled: false
+  nginx:
+    enabled: false
