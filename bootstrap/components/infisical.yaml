@@ -25,6 +25,13 @@ spec:
       targetRevision: HEAD
       ref: values
 
+    # SOURCE 3: Your Git Repo (for secrets, ingress etc.)
+    - repoURL: 'https://github.com/TataHostIT/tatahostit-platform.git'
+      targetRevision: HEAD
+      path: infra/infisical
+      directory:
+        recurse: true
+        exclude: 'values.yaml'
   syncPolicy:
     automated:
       prune: true
