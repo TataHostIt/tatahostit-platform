@@ -21,7 +21,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: dev-access-binding
-  namespace: agent-dev
+  namespace: openring-dev
 subjects:
 - kind: User
   name: naresh.dhiman@gmail.com
@@ -38,7 +38,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: dev-access-binding
-  namespace: agent-prod
+  namespace: openring-stg
 subjects:
 - kind: User
   name: naresh.dhiman@gmail.com
@@ -50,3 +50,21 @@ roleRef:
   kind: ClusterRole
   name: edit
   apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: dev-access-binding
+  namespace: openring-prod
+subjects:
+- kind: User
+  name: naresh.dhiman@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: User
+  name: tatahostit@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: edit
+  apiGroup: rbac.authorization.k8s.io
+---
