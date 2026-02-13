@@ -53,6 +53,9 @@ spec:
                 secretKeyRef:
                   name: github-pat-secret
                   key: pat
+          envFrom:
+            - secretRef:
+                name: argo-runner-creds
           volumeMounts:
             - name: docker-config
               mountPath: /tmp/docker-config
