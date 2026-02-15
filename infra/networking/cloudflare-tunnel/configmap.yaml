@@ -5,22 +5,23 @@ metadata:
   namespace: cloudflare-tunnel
 data:
   config.yaml: |
-    config.yaml: |
     originRequest:
       noTLSVerify: true
       http2Origin: true
     
     ingress:
-      # tatahostit.com rules
-      - hostname: "*.tatahostit.com"
-        service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
-      - hostname: "tatahostit.com"
+      # Specific rule for the root domain
+      - hostname: "openring.ai"
         service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
 
-      # NEW: openring.ai rules
+      # Wildcard for all subdomains (dev, stg, etc.)
       - hostname: "*.openring.ai"
         service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
-      - hostname: "openring.ai"
+
+      # Existing tatahostit.com rules
+      - hostname: "tatahostit.com"
+        service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
+      - hostname: "*.tatahostit.com"
         service: https://ingress-nginx-public-controller.ingress-nginx.svc.cluster.local:443
       
       - service: http_status:404
