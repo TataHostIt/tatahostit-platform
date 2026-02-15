@@ -31,7 +31,7 @@ ingress:
   enabled: true
   nginx:
     enabled: false
-  ingressClassName: nginx
+  ingressClassName: "nginx-public"
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
   hostName: "secrets.openring.ai"
