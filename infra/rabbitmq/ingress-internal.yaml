@@ -10,7 +10,7 @@ spec:
   tls:
   - hosts:
     - rabbitmq.tatahostit.com
-    secretName: rabbitmq-mgmt-tls
+    secretName: rabbitmq-tatahostit-com-tls
   rules:
   - host: rabbitmq.tatahostit.com
     http:
