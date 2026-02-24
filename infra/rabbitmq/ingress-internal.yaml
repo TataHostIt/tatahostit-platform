@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - rabbitmq.internal.tatahostit.com
+    - rabbitmq.tatahostit.com
     secretName: rabbitmq-mgmt-tls
   rules:
-  - host: rabbitmq.internal.tatahostit.com
+  - host: rabbitmq.tatahostit.com
     http:
       paths:
       - path: /()(.*) # Captures the path to pass to rewrite-target
